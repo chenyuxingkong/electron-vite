@@ -1,7 +1,6 @@
 // electron/electron.js
 const path = require('path');
 const {app, BrowserWindow, ipcMain, shell} = require('electron');
-const fs = require('fs');
 
 const axios = require("axios");
 
@@ -21,7 +20,8 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            webSecurity: true,
+            // allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面 这个
+            // webSecurity: false,
             // webviewTag: true, // 启用 <webview> tag 标签
         },
         title: 'XC-助手工具',
@@ -48,16 +48,11 @@ ipcMain.on("minWindow", function (event, args) {
     mainWindow.minimize()
 })
 
-ipcMain.on('startJava', function (event, args) {
-    runJavaServer();
-})
-
-
 ipcMain.on("quitApp", function (event, args) {
     // 关闭服务
+    stopJavaServer()
     mainWindow.close()
 })
-
 
 
 // 此方法将在 Electron 完成时调用
@@ -65,7 +60,6 @@ ipcMain.on("quitApp", function (event, args) {
 // 某些 API 只能在此事件发生后才能使用。
 app.whenReady().then(() => {
     createWindow();
-    stopJavaServer();
     runJavaServer();
     // createConfigurationFile();
     app.on('activate', function () {
@@ -80,7 +74,7 @@ app.whenReady().then(() => {
  */
 function runJavaServer() {
     if (!isDev) {
-        let serverPath = path.resolve(__dirname, './server/start.bat')
+        let serverPath = path.resolve(__dirname, '../server/start.bat')
         shell.openPath(serverPath).then(r => {
         })
     }
@@ -91,11 +85,9 @@ function runJavaServer() {
  */
 function stopJavaServer() {
     if (!isDev) {
-        // 两重关闭 java 自身关闭不了 就用 bat 关闭
-        axios.get("http://localhost:9297/system/serverQuit").then(r => {
-            let serverPath = path.resolve(__dirname, '.\\server\\stop.bat')
-            shell.openPath(serverPath).then(r => {
-            })
+        // 使用 stop 结束
+        let serverPath = path.resolve(__dirname, '../server/stop.bat')
+        shell.openPath(serverPath).then(r => {
         })
     }
 }

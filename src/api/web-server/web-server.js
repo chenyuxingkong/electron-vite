@@ -1,8 +1,9 @@
 import request from "../../utils/request";
 
-export function isRun() {
+
+export function serverQuit() {
     return request({
-        url: '/isRun',
-        method: 'get',
+        url: '/system/serverQuit',
+        method: 'get'
     })
 }
