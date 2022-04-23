@@ -11,7 +11,7 @@
     <el-table :data="heroWinRateRanking" :default-sort="{prop:'hierarchy',order:'ascending '}"
               :height="windowSize.h - 100"
               class="heroTable">
-      <el-table-column type="index" width="30px"></el-table-column>
+      <el-table-column type="index" width="40px"></el-table-column>
       <el-table-column label="头像" width="50px">
         <template #default="scope">
           <img :alt="scope.row.name" :src="scope.row.img" style="height: 32px;width: 32px"/>

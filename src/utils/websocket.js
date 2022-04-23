@@ -50,9 +50,6 @@ export function initWebSocket() {
     webSocket.onclose = function () {
         webSocket = null
         setTimeout(() => {
-            if (isDev) {
-                ipcRenderer.send('startJava')
-            }
             initWebSocket(sid)
         }, 3000)
     }

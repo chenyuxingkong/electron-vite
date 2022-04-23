@@ -1,8 +1,7 @@
 // electron/electron.js
 const path = require('path');
 const {app, BrowserWindow, ipcMain, shell} = require('electron');
-
-const axios = require("axios");
+const exec = require('child_process').exec
 
 
 const isDev = process.env.IS_DEV === "true";
@@ -54,6 +53,13 @@ ipcMain.on("quitApp", function (event, args) {
     mainWindow.close()
 })
 
+ipcMain.on("javaStart", function (event, args) {
+    let serverPath = path.resolve(__dirname, '../server/start.vbe')
+    shell.openPath(serverPath).then(r => {
+        console.log(r)
+    })
+})
+
 
 // 此方法将在 Electron 完成时调用
 // 初始化并准备好创建浏览器窗口。
@@ -74,8 +80,9 @@ app.whenReady().then(() => {
  */
 function runJavaServer() {
     if (!isDev) {
-        let serverPath = path.resolve(__dirname, '../server/start.bat')
+        let serverPath = path.resolve(__dirname, '../server/start.vbe')
         shell.openPath(serverPath).then(r => {
+            console.log(r)
         })
     }
 }
@@ -86,7 +93,7 @@ function runJavaServer() {
 function stopJavaServer() {
     if (!isDev) {
         // 使用 stop 结束
-        let serverPath = path.resolve(__dirname, '../server/stop.bat')
+        let serverPath = path.resolve(__dirname, '../server/stop.vbe')
         shell.openPath(serverPath).then(r => {
         })
     }

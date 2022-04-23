@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 jre
-xc-zs-webserver.jar
+xc-zs-webserver-1.jar
 dist_electron
 
 # Editor directories and files
