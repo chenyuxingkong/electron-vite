@@ -7,4 +7,6 @@ start mshta vbscript:createobject("wscript.shell").run("""%~0"" hide",0)(window.
 cd /d "%~dp0"
 
 for /f "tokens=5" %%a in ('netstat /ano ^| findstr 9297') do taskkill /F /pid %%a
-start jre/bin/javaw -jar xc-zs-webserver-1.jar
+start jre/bin/javaw -jar xc-zs-webserver-1.jar --spring.profiles.active=prod
+
+
