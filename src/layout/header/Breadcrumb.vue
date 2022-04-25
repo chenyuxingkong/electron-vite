@@ -33,7 +33,6 @@
 import {computed} from "vue";
 import router from "../../router";
 import {ArrowLeftBold, ArrowRightBold, CloseBold, Minus} from "@element-plus/icons"
-import {serverQuit} from "../../api/web-server/web-server";
 
 
 /**
@@ -54,7 +53,6 @@ const minWindow = () => {
 }
 
 const quitApp = () => {
-  serverQuit()
   ipcRenderer.send("quitApp")
 }
 

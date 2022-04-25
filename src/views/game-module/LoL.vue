@@ -38,9 +38,7 @@
  * @date 2022-04-12 18:58
  */
 import store from '../../store'
-import {getHeroData} from "@/api/game-mod/lol/lol-qq";
 import AsideOpggData from "@/components/game/lol/AsideOpggData";
-import MainLoLData from "@/components/game/lol/MainLoLData";
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getTheNewVersionOfTheSkin} from "@/api/game-mod/lol/skin";
@@ -100,19 +98,19 @@ const checkVersion = () => {
 }
 
 
-onMounted(() => {
-  getHeroData().then((res) => {
-    console.log(res)
-    res.data.forEach(item => {
-      analysisOfTheHeroBranch(item)
-    })
-    heroData.value = res.data
-  })
-})
-
-onActivated(() => {
-  checkVersion()
-})
+// onMounted(() => {
+//   getHeroData().then((res) => {
+//     console.log(res)
+//     res.data.forEach(item => {
+//       analysisOfTheHeroBranch(item)
+//     })
+//     heroData.value = res.data
+//   })
+// })
+//
+// onActivated(() => {
+//   checkVersion()
+// })
 
 
 </script>

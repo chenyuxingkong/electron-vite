@@ -1,6 +1,5 @@
 <script setup>
 import store from './store'
-import {closeWebSocket, initWebSocket} from "@/utils/websocket";
 
 /**
  * 获取窗口大小
@@ -13,10 +12,13 @@ function getWindowSize() {
   return {w, h, width, height}
 }
 
+window.onerror = function (message, source, lineno, colno, error) {
+  console.log(message, source, lineno, colno, error)
+  // do something
+}
+
 onMounted(() => {
   store.commit("app/setWindowSize", getWindowSize())
-  closeWebSocket()
-  initWebSocket()
 })
 
 window.onresize = () => {

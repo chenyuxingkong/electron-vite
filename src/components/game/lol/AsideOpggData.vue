@@ -36,6 +36,7 @@
 import {heroPosition} from "@/data/game";
 import {getOpggWinRate} from "@/api/game-mod/lol/opgg";
 import store from "@/store";
+import {analyzeHeroWinRate} from "../../../utils/game/lol/lolUtils";
 
 /**
  * <p>
@@ -63,7 +64,7 @@ const clickToCheckTheWinningRate = (val) => {
 
 onMounted(() => {
   getOpggWinRate(winningPosition.value).then((res) => {
-    heroWinRateRanking.value = res
+    analyzeHeroWinRate(res)
   })
 })
 </script>

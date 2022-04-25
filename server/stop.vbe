@@ -1,4 +1,0 @@
-path = createobject("Scripting.FileSystemObject").GetFolder(".").Path
-path = "cmd /c " + path + "\stop.bat"
-
-CreateObject("WScript.Shell").Run path,0

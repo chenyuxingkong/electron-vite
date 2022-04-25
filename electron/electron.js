@@ -19,8 +19,8 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            // allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面 这个
-            // webSecurity: false,
+            allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面 这个
+            webSecurity: false,
             // webviewTag: true, // 启用 <webview> tag 标签
         },
         title: 'XC-助手工具',
@@ -48,16 +48,7 @@ ipcMain.on("minWindow", function (event, args) {
 })
 
 ipcMain.on("quitApp", function (event, args) {
-    // 关闭服务
-    stopJavaServer()
     mainWindow.close()
-})
-
-ipcMain.on("javaStart", function (event, args) {
-    let serverPath = path.resolve(__dirname, '../server/start.vbe')
-    shell.openPath(serverPath).then(r => {
-        console.log(r)
-    })
 })
 
 
@@ -66,8 +57,6 @@ ipcMain.on("javaStart", function (event, args) {
 // 某些 API 只能在此事件发生后才能使用。
 app.whenReady().then(() => {
     createWindow();
-    runJavaServer();
-    // createConfigurationFile();
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icons is clicked and there are no other windows open.
@@ -75,29 +64,6 @@ app.whenReady().then(() => {
     })
 });
 
-/**
- * 开启java服务
- */
-function runJavaServer() {
-    if (!isDev) {
-        let serverPath = path.resolve(__dirname, '../server/start.vbe')
-        shell.openPath(serverPath).then(r => {
-            console.log(r)
-        })
-    }
-}
-
-/**
- * 关闭java
- */
-function stopJavaServer() {
-    if (!isDev) {
-        // 使用 stop 结束
-        let serverPath = path.resolve(__dirname, '../server/stop.vbe')
-        shell.openPath(serverPath).then(r => {
-        })
-    }
-}
 
 // 关闭所有窗口后退出，macOS 除外。那里，很常见
 // 让应用程序及其菜单栏保持活动状态，直到用户退出
