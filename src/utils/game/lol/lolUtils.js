@@ -105,10 +105,6 @@ function open() {
     }
     exec("taskkill /f /im " + "\"" + skinName + "\"", function (error, stdout, stderr) {
         exec("\"C:\\Fraps\\" + skinName + "\"", function (error, stdout, stderr) {
-            if (error !== null) {
-                ElMessage.error("请使用管理员权限打开本应用程序")
-            }
-
         })
     })
 }
