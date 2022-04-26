@@ -33,6 +33,7 @@
     "electron-builder": "^22.14.13",
     "electron-packager": "^15.4.0",
     "electron-winstaller": "^5.0.0",
+    "iconv-lite": "^0.6.3",
     "sass": "^1.50.0",
     "typescript": "^4.5.4",
     "unplugin-auto-import": "^0.6.9",
@@ -49,7 +50,6 @@
     "appId": "CY",
     "productName": "CY-ZS",
     "copyright": "Copyright © 2021 xc",
-    "asar": false,
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
@@ -59,8 +59,7 @@
     },
     "files": [
       "dist/**/*",
-      "electron/**/*",
-      "server/**/*"
+      "electron/**/*"
     ],
     "directories": {
       "buildResources": "assets",

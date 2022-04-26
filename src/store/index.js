@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 import Presistent from './modules/public/persistent'
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -37,6 +37,7 @@ export default createStore({
   modules: {
     ...modules,
   },
-  strict: debug,
-  plugins: [presistent],
+    // 如果想要开启本地缓存，就把下面注释打开
+    // strict: debug,
+    // plugins: [presistent],
 })

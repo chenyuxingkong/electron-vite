@@ -7,19 +7,19 @@ import request from '@/utils/request'
  * @author xc
  * @date 2022-04-19 10:20
  */
-let url = '/lol/qq'
 
 export function getHeroData() {
     return request({
-        url: url + '/getHeroData',
+        url: 'https://game.gtimg.cn/images/lol/act/img/js/heroList/hero_list.js',
         method: 'get',
     })
 }
 
-export function post() {
-    return request({
-        url: url + '/',
-        method: 'post',
-        data
-    })
+export function qqHeroPosition() {
+    return request(({
+        url: 'https://lol.qq.com/act/lbp/common/guides/guideschampion_position.js',
+        method: 'get'
+    }))
 }
+
+

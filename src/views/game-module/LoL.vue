@@ -41,8 +41,9 @@ import store from '../../store'
 import AsideOpggData from "@/components/game/lol/AsideOpggData";
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
-import {getTheNewVersionOfTheSkin} from "@/api/game-mod/lol/skin";
-import {ElMessage} from "element-plus";
+import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
+import {stringIsNotBlank} from "@/utils/blankUtils.ts";
+import {getSkinName} from "@/utils/game/lol/lolUtils";
 
 
 const windowSize = computed(() => {
@@ -54,9 +55,11 @@ const heroName = ref('')
 const heroData = ref([])
 // 英雄位置
 const position = ref('')
-
+// 版本
+const version = ref('')
 const sameVersion = ref(false)
 
+// 查询英雄
 const selectHeroData = computed(() => {
   return heroData.value.filter(item => {
     return item.keywords.indexOf(heroName.value) > -1 && item.positionStr.indexOf(position.value) > -1
@@ -82,35 +85,37 @@ function analysisOfTheHeroBranch(data) {
   }
 }
 
+/**
+ * 查询版本是否对应
+ */
 const checkVersion = () => {
-  getTheNewVersionOfTheSkin().then(res => {
-    sameVersion.value = true
-    ElMessage({
-      message: `当前版本与国服一致<br>换肤版本:${res.skinVersion}<br>国服版本:${res.version}`,
-      type: 'success',
-      duration: 4000,
-      showClose: true,
-      dangerouslyUseHTMLString: true
-    })
-  }).catch((e) => {
-    sameVersion.value = false
-  })
+  console.log(getSkinName());
 }
 
 
-// onMounted(() => {
-//   getHeroData().then((res) => {
-//     console.log(res)
-//     res.data.forEach(item => {
-//       analysisOfTheHeroBranch(item)
-//     })
-//     heroData.value = res.data
-//   })
-// })
-//
-// onActivated(() => {
-//   checkVersion()
-// })
+onMounted((res) => {
+  qqHeroPosition().then((res) => {
+    // 获取英雄位置，转成 json 对象
+    let newString = JSON.parse(res.toString().split("=")[1].split(";")[0])
+    // 判断状态
+    if (newString.status === '0') {
+      // 获取英雄数据
+      getHeroData().then((res) => {
+        version.value = res.version
+        res.hero.forEach(item => {
+          // 根据英雄 id 来获取位置
+          if (stringIsNotBlank(item.heroId)) {
+            item.position = newString.list[item.heroId]
+            // 拼接位置
+            analysisOfTheHeroBranch(item)
+            // 存放数据
+            heroData.value.push(item)
+          }
+        })
+      })
+    }
+  })
+})
 
 
 </script>

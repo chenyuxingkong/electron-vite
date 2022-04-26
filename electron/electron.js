@@ -5,6 +5,8 @@ const exec = require('child_process').exec
 
 
 const isDev = process.env.IS_DEV === "true";
+// 关闭 electron 的警告
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 let mainWindow = null;
 
@@ -19,11 +21,11 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面 这个
+            allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面的，这两个会有警告
             webSecurity: false,
             // webviewTag: true, // 启用 <webview> tag 标签
         },
-        title: 'XC-助手工具',
+        title: 'CY-助手工具',
         show: true,
         icon: path.join(__dirname, 'favicon.ico'),
     });

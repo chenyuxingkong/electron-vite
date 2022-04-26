@@ -36,7 +36,7 @@
 import store from "@/store";
 import {stringIsBlank} from "@/utils/blankUtils.ts";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {openSkin} from "@/api/game-mod/lol/skin";
+import {heroPositionChinese, openSkin} from "@/utils/game/lol/lolUtils";
 
 /**
  * <p>
@@ -70,39 +70,19 @@ const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
-const clickToSkin = (val) => {
-  if (stringIsBlank(val.alias)) {
+const clickToSkin = ({alias}) => {
+  if (stringIsBlank(alias)) {
     return ElMessage.error('没有找到英雄。')
   }
-  openSkin(val.alias)
+  openSkin(alias)
 }
 
 const clickToViewHeroDetails = () => {
   ElMessageBox.alert('该功能正在制作中', '提示', {}).then(() => {
-
   }).catch(() => {
 
   })
 }
-const heroPositionChinese = (val) => {
-  switch (val) {
-    case 'top':
-      return '上单';
-    case 'jungle':
-      return '打野';
-    case 'mid':
-      return '中路';
-    case 'adc':
-      return '下路';
-    case 'bottom':
-      return '下路';
-    case 'support':
-      return '辅助';
-    default:
-      return "";
-  }
-}
-
 
 </script>
 

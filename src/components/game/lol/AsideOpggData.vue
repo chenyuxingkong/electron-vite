@@ -1,5 +1,7 @@
 <template>
   <el-main>
+    <el-tag type="success"> 当前版本：{{ version }}</el-tag>
+    <el-tag type="warning"> 数据来源 opgg</el-tag>
     <div class="tab">
       <template v-for="item in heroPosition">
         <div :class="item.value === winningPosition ? 'active' : 'unselected' "
@@ -8,7 +10,7 @@
         </div>
       </template>
     </div>
-    <el-table :data="heroWinRateRanking" :default-sort="{prop:'hierarchy',order:'ascending '}"
+    <el-table ref="tableRef" :data="heroWinRateRanking" :default-sort="{prop:'hierarchy',order:'ascending '}"
               :height="windowSize.h - 100"
               class="heroTable">
       <el-table-column type="index" width="40px"></el-table-column>
@@ -36,7 +38,7 @@
 import {heroPosition} from "@/data/game";
 import {getOpggWinRate} from "@/api/game-mod/lol/opgg";
 import store from "@/store";
-import {analyzeHeroWinRate} from "../../../utils/game/lol/lolUtils";
+import {analyzeHeroWinRate} from "@/utils/game/lol/lolUtils";
 
 /**
  * <p>
@@ -48,23 +50,28 @@ import {analyzeHeroWinRate} from "../../../utils/game/lol/lolUtils";
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
+const tableRef = ref(null)
 
 // 英雄胜率数据
 const heroWinRateRanking = ref([])
 // 胜率位置
 const winningPosition = ref('top')
+// 版本
+const version = ref('')
 
 // 点击位置查询
 const clickToCheckTheWinningRate = (val) => {
   winningPosition.value = val
   getOpggWinRate(winningPosition.value).then((res) => {
-    heroWinRateRanking.value = res
+    tableRef.value.$refs.bodyWrapper.scrollTop = 0
+    heroWinRateRanking.value = analyzeHeroWinRate(res.pageProps.championRankingList)
   })
 }
 
 onMounted(() => {
   getOpggWinRate(winningPosition.value).then((res) => {
-    analyzeHeroWinRate(res)
+    version.value = res.pageProps.versionData.version
+    heroWinRateRanking.value = analyzeHeroWinRate(res.pageProps.championRankingList)
   })
 })
 </script>
