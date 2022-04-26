@@ -25,9 +25,7 @@ export default defineConfig({
     plugins: [
         VueSetupExtend(),
         // 开启vue
-        vue({
-            refTransform: true
-        }),
+        vue(),
         // 按需加载
         AutoImport({
             resolvers: [ElementPlusResolver()],
