@@ -1,7 +1,6 @@
 // electron/electron.js
 const path = require('path');
-const {app, BrowserWindow, ipcMain, shell} = require('electron');
-const exec = require('child_process').exec
+const {app, BrowserWindow, ipcMain} = require('electron');
 
 
 const isDev = process.env.IS_DEV === "true";
@@ -75,6 +74,7 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 })
+
 
 
 
