@@ -13,7 +13,7 @@ dist-ssr
 *.local
 jre
 xc-zs-webserver-1.jar
-dist_electron
+dist_electron/win-unpacked
 
 # Editor directories and files
 .vscode/*
