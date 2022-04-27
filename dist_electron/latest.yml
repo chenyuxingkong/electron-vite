@@ -1,0 +1,8 @@
+version: 3.1.2
+files:
+  - url: CY-ZS-Setup-3.1.2.exe
+    sha512: zeUHrEVn1Fv0UIMCgc5FNGl4TykP5KW2i0CtbRRXx5F/GUpkKoXkDmZyOiX30noDWfj5gnGOa3bfZwJieKc+5Q==
+    size: 70068484
+path: CY-ZS-Setup-3.1.2.exe
+sha512: zeUHrEVn1Fv0UIMCgc5FNGl4TykP5KW2i0CtbRRXx5F/GUpkKoXkDmZyOiX30noDWfj5gnGOa3bfZwJieKc+5Q==
+releaseDate: '2022-04-27T02:09:15.330Z'
