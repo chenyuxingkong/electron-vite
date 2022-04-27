@@ -1,6 +1,6 @@
 // electron/electron.js
 const path = require('path');
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, autoUpdater} = require('electron');
 
 
 const isDev = process.env.IS_DEV === "true";
@@ -73,3 +73,15 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 })
+
+const server = 'https://gitee.com/xiaobluestarrysky/electron-vite/releases'
+const url = `${server}/v${app.getVersion()}`
+
+autoUpdater.setFeedURL({url})
+
+console.log(url)
+
+setInterval(() => {
+    console.log(url)
+    autoUpdater.checkForUpdates()
+}, 60000)
