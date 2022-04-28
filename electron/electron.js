@@ -75,11 +75,9 @@ app.on('window-all-closed', () => {
 })
 
 const server = 'https://gitee.com/xiaobluestarrysky/electron-vite/releases'
-const url = `${server}/v${app.getVersion()}`
+const url = `${server}`
 
 autoUpdater.setFeedURL({url})
-
-console.log(url)
 
 setInterval(() => {
     console.log(url)
