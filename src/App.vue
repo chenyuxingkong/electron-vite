@@ -1,9 +1,11 @@
 <script setup>
 import store from './store'
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessageBox} from "element-plus";
 import logger from "@/utils/logger";
 
-const {ipcRenderer} = require('electron')
+
+let ipcRenderer = require('electron').ipcRenderer
+
 
 /**
  * 获取窗口大小
@@ -16,11 +18,6 @@ function getWindowSize() {
   return {w, h, width, height}
 }
 
-window.onerror = function (message, source, lineno, colno, error) {
-  console.log(message, source, lineno, colno, error)
-  // do something
-}
-
 onMounted(() => {
   store.commit("app/setWindowSize", getWindowSize())
 })
@@ -31,19 +28,22 @@ window.onresize = () => {
 
 ipcRenderer.send('check-for-updates')
 
-ipcRenderer.on('updater-message', function (event, args) {
-  logger.info("前端更新数据")
-  ElMessage.success('发现可更新数据')
-  ElMessageBox.confirm('', '发现可更新数据', {
-    type: 'info',
-    message: args.releaseNotes,
-    dangerouslyUseHTMLString: true
-  }).then(() => {
-    logger.info("开始更新")
-  }).catch(() => {
-    logger.info("取消更新")
-  })
-})
+let box = null;
+
+ipcRenderer.on('updater-message', (event, args) => {
+      if (box === null) {
+        box = ElMessageBox.confirm('', '发现可更新数据', {
+          type: 'info',
+          message: args.releaseNotes,
+          dangerouslyUseHTMLString: true
+        }).then(() => {
+          logger.info("开始更新")
+        }).catch(() => {
+          logger.info("取消更新")
+        })
+      }
+    }
+)
 
 </script>
 

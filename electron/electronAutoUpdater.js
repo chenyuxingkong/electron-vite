@@ -5,6 +5,7 @@ exports.autoUpdate = function (mainWindow) {
     // 这个先设置为 false 不然就直接下载了
     autoUpdater.autoDownload = false
     info("进入更新方法")
+
     autoUpdater.checkForUpdates().then(r => {
         info("检查更新")
     })
@@ -19,10 +20,8 @@ exports.autoUpdate = function (mainWindow) {
     })
     // 发现可更新数据时
     autoUpdater.on('update-available', (event, arg) => {
-        mainWindow.webContents.on('did-finish-load', () => {
-            mainWindow.webContents.send('updater-message', arg)
-            info("发现可更新数据", event)
-        })
+        mainWindow.webContents.send('updater-message', event)
+        info("发现可更新数据", event, arg)
     })
     // 没有可更新数据时
     autoUpdater.on('update-not-available', (event, arg) => {

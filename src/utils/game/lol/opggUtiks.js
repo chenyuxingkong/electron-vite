@@ -35,7 +35,6 @@ export async function getOpggData(val) {
                     heroInfo.name = $(getName).find('strong').text()
                     heroInfo.position = $(getName).find('small').text()
                     heroInfo.img = $(elem).find('img')[0].attribs.src
-
                 } else if (i === 2) {
                     heroInfo.winRate = $(elem).text()
                 } else if (i === 3) {

@@ -6,7 +6,7 @@ logger.transports.file.maxSize = 1002430 // 10M
 logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} {text}'
 let date = new Date()
 date = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-logger.transports.file.resolvePath = () => app.getPath('userData') + '\\cy-zs-log\\app\\' + date + '.log'
+logger.transports.file.resolvePath = () => "C:\\xc-zs-log\\" + date + '.log'
 
 export default {
     info(...params) {

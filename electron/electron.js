@@ -1,9 +1,8 @@
-// electron/electron.js
 const path = require('path');
 const {app, BrowserWindow, ipcMain} = require('electron');
-const {autoUpdate} = require("./electronAutoUpdater");
 const {info, error} = require('./logger')
 const {autoUpdater} = require("electron-updater");
+const {autoUpdate} = require("./electronAutoUpdater");
 
 const isDev = process.env.IS_DEV === "true";
 // 关闭 electron 的警告
@@ -42,7 +41,6 @@ function createWindow() {
     if (isDev) {
         mainWindow.webContents.openDevTools({mode: 'right'});
     }
-
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('get-app-version', app.getVersion())
         info("发送版本号", app.getVersion())
@@ -52,7 +50,7 @@ function createWindow() {
 ipcMain.on('check-for-updates', function (event, args) {
     if (!isDev) {
         // 只有在正式环境中才更新
-        getUpdater()
+        autoUpdate(mainWindow)
     }
 })
 
@@ -91,6 +89,7 @@ function getUpdater() {
     // 这个先设置为 false 不然就直接下载了
     autoUpdater.autoDownload = false
     info("进入更新方法")
+
     autoUpdater.checkForUpdates().then(r => {
         info("检查更新")
     })
@@ -105,7 +104,7 @@ function getUpdater() {
     })
     // 发现可更新数据时
     autoUpdater.on('update-available', (event, arg) => {
-        mainWindow.webContents.send('updater-message', arg)
+        mainWindow.webContents.send('updater-message', event)
         info("发现可更新数据", event)
     })
     // 没有可更新数据时

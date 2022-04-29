@@ -4,7 +4,8 @@
   </el-container>
 </template>
 
-<script lang="ts" name="Home" setup>/**
+<script lang="ts" name="Home" setup>
+/**
  * <p>
  * 描述：
  * </p>
@@ -16,7 +17,9 @@ import {ref} from "vue";
 const {ipcRenderer} = require('electron')
 
 const appVersion = ref('')
+
 ipcRenderer.on('get-app-version', function (event, args) {
+  console.log(event, args)
   appVersion.value = args
 })
 
