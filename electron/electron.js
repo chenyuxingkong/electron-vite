@@ -1,7 +1,7 @@
 // electron/electron.js
 const path = require('path');
-const {app, BrowserWindow, ipcMain, autoUpdater} = require('electron');
-
+const {app, BrowserWindow, dialog, ipcMain} = require('electron');
+const {autoUpdater} = require("electron-updater");
 
 const isDev = process.env.IS_DEV === "true";
 // 关闭 electron 的警告
@@ -29,7 +29,6 @@ function createWindow() {
         icon: path.join(__dirname, 'favicon.ico'),
     });
 
-
     // and load the index.html of the app.
     // win.loadFile("index.html");
     mainWindow.loadURL(
@@ -42,6 +41,13 @@ function createWindow() {
     if (isDev) {
         mainWindow.webContents.openDevTools({mode: 'right'});
     }
+    if (!isDev) {
+        // 只有在正式环境中才更新
+        autoUpdate()
+    }
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.send('get-app-version', app.getVersion())
+    })
 }
 
 ipcMain.on("minWindow", function (event, args) {
@@ -74,12 +80,34 @@ app.on('window-all-closed', () => {
     }
 })
 
-const server = 'https://gitee.com/xiaobluestarrysky/electron-vite/releases'
-const url = `${server}`
 
-autoUpdater.setFeedURL({url})
+function autoUpdate() {
+    autoUpdater.checkForUpdates().then(r => {
+    });
 
-setInterval(() => {
-    console.log(url)
-    autoUpdater.checkForUpdates()
-}, 60000)
+    autoUpdater.on("update-available", (_event, releaseNotes, releaseName) => {
+        const dialogOpts = {
+            type: 'info',
+            buttons: ['确定'],
+            title: '应用程序更新',
+            message: "发现新版本, 确定更新?",
+        }
+        dialog.showMessageBox(dialogOpts, (response) => {
+
+        }).then(r => {
+        });
+    })
+
+    autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
+        const dialogOpts = {
+            type: 'info',
+            buttons: ['重启', '之后'],
+            title: '应用程序更新',
+            message: process.platform === 'win32' ? releaseNotes : releaseName,
+            detail: '已下载新版本,重新启动应用程序以应用更新。'
+        };
+        dialog.showMessageBox(dialogOpts).then((returnValue) => {
+            if (returnValue.response === 0) autoUpdater.quitAndInstall()
+        })
+    });
+}

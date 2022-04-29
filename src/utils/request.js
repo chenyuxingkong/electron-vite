@@ -7,7 +7,7 @@ import {ElMessage} from 'element-plus'
 const service = axios.create({
     baseURL: '',
     withCredentials: true,
-    timeout: 0,
+    timeout: 5000,
 })
 
 service.interceptors.request.use(

@@ -1,8 +1,12 @@
 {
   "name": "cy-zs-vite",
   "private": true,
-  "version": "3.1.1",
+  "version": "3.2.3",
   "main": "electron/electron.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chenyuxingkong/electron-vite"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,7 +17,7 @@
     "electron:build.linux": "npm run build && electron-builder --linux appImage",
     "electron:build.test": "npm run build && electron-builder --dir",
     "electron:build.exe": "npm run build && electron-builder --win",
-    "electron:publish": "electron-builder --publish always"
+    "electron:publish": "set GH_TOKEN=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 && npm run build && electron-builder --win --publish always"
   },
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
@@ -58,13 +62,9 @@
     },
     "win": {
       "icon": "electron/logo.ico",
-      "publish": {
-        "provider": "github",
-        "repo": "https://github.com/chenyuxingkong/electron-vite",
-        "token": "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",
-        "releaseType": "release",
-        "publishAutoUpdate": true
-      }
+      "publish": [
+        "github"
+      ]
     },
     "files": [
       "dist/**/*",
