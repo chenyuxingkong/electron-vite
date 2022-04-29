@@ -1,7 +1,7 @@
 {
   "name": "cy-zs-vite",
   "private": true,
-  "version": "3.2.3",
+  "version": "3.1.3",
   "main": "electron/electron.js",
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "@element-plus/icons": "^0.0.11",
     "axios": "^0.26.1",
     "cheerio": "^1.0.0-rc.10",
+    "electron-log": "^4.4.6",
     "electron-updater": "^5.0.1",
     "element-plus": "^2.1.8",
     "vue": "^3.2.25",
@@ -76,4 +77,3 @@
     }
   }
 }
-
