@@ -10,8 +10,8 @@
         </div>
       </template>
     </div>
-    <el-table ref="tableRef" :data="heroWinRateRanking" :default-sort="{prop:'hierarchy',order:'ascending '}"
-              :height="windowSize.h - 100"
+    <el-table ref="tableRef" v-loading="loading" :data="heroWinRateRanking"
+              :default-sort="{prop:'hierarchy',order:'ascending '}" :height="windowSize.h - 100"
               class="heroTable">
       <el-table-column type="index" width="40px"></el-table-column>
       <el-table-column label="头像" width="50px">
@@ -36,9 +36,8 @@
 
 <script name="AsideOpggData" setup>
 import {heroPosition} from "@/data/game";
-import {getOpggWinRate} from "@/api/game-mod/lol/opgg";
 import store from "@/store";
-import {analyzeHeroWinRate} from "@/utils/game/lol/lolUtils";
+import {getOpggData} from "../../../utils/game/lol/opggUtiks";
 
 /**
  * <p>
@@ -52,6 +51,8 @@ const windowSize = computed(() => {
 })
 const tableRef = ref(null)
 
+const loading = ref(true)
+
 // 英雄胜率数据
 const heroWinRateRanking = ref([])
 // 胜率位置
@@ -59,20 +60,27 @@ const winningPosition = ref('top')
 // 版本
 const version = ref('')
 
-// 点击位置查询
-const clickToCheckTheWinningRate = (val) => {
-  winningPosition.value = val
-  getOpggWinRate(winningPosition.value).then((res) => {
-    tableRef.value.$refs.bodyWrapper.scrollTop = 0
-    heroWinRateRanking.value = analyzeHeroWinRate(res.pageProps.championRankingList)
+// 获取英雄胜率
+const getHeroWinRateEvent = () => {
+  loading.value = true
+  getOpggData(winningPosition.value).then((res) => {
+    version.value = res.version
+    heroWinRateRanking.value = res.data
+    setTimeout(() => {
+      loading.value = false
+      tableRef.value.$refs.bodyWrapper.scrollTop = 0
+    }, 200)
   })
 }
 
+// 点击位置查询
+const clickToCheckTheWinningRate = (val) => {
+  winningPosition.value = val
+  getHeroWinRateEvent()
+}
+
 onMounted(() => {
-  getOpggWinRate(winningPosition.value).then((res) => {
-    version.value = res.pageProps.versionData.version
-    heroWinRateRanking.value = analyzeHeroWinRate(res.pageProps.championRankingList)
-  })
+  getHeroWinRateEvent()
 })
 </script>
 
