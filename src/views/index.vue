@@ -5,7 +5,7 @@
     </el-aside>
     <el-container>
       <el-header class="header"
-                 style="height: 30px;margin-bottom: 5px;box-shadow : 0 12px 32px 4px rgba(0, 0, 0, .04), 0 8px 20px rgba(0, 0, 0, .08)">
+                 style="height: 35px;margin-bottom: 5px;box-shadow : 0 12px 32px 4px rgba(0, 0, 0, .04), 0 8px 20px rgba(0, 0, 0, .08)">
         <Breadcrumb></Breadcrumb>
       </el-header>
       <el-main class="main">
@@ -25,7 +25,6 @@
 import CyMenu from '../layout/menu/menu.vue'
 import Breadcrumb from '../layout/header/Breadcrumb.vue'
 import store from '../store'
-import {computed} from "vue";
 
 /**
  * <p>
@@ -34,9 +33,6 @@ import {computed} from "vue";
  * @author xc
  * @date 2022-04-09 04:08
  */
-const isCollapse = computed(() => {
-  return store.state.app.isCollapse
-})
 
 </script>
 

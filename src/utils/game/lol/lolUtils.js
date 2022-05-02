@@ -88,13 +88,17 @@ function changeSetting(path, name) {
 }
 
 export function getSkinName() {
-    const addirList = fs.readdirSync('C:\\Fraps')
-    for (let i = 0; i < addirList.length; i++) {
-        if (getExtension(addirList[i]) === 'exe') {
-            if (addirList[i].indexOf("LOLPRO") > -1) {
-                return addirList[i]
+    try {
+        const addirList = fs.readdirSync('C:\\Fraps')
+        for (let i = 0; i < addirList.length; i++) {
+            if (getExtension(addirList[i]) === 'exe') {
+                if (addirList[i].indexOf("LOLPRO") > -1) {
+                    return addirList[i]
+                }
             }
         }
+    } catch (e) {
+        ElMessage.error("LOL SKIN 文件不存在，请先下载")
     }
 }
 

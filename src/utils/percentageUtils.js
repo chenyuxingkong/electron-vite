@@ -12,3 +12,5 @@ export function toPercent(point) {
     str += "%";
     return str;
 }
+
+

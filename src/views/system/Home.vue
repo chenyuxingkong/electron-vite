@@ -4,7 +4,7 @@
   </el-container>
 </template>
 
-<script lang="ts" name="Home" setup>
+<script name="Home" setup>
 /**
  * <p>
  * 描述：
@@ -18,11 +18,9 @@ const {ipcRenderer} = require('electron')
 
 const appVersion = ref('')
 
-ipcRenderer.on('get-app-version', function (event, args) {
-  console.log(event, args)
-  appVersion.value = args
+onMounted(() => {
+  appVersion.value = ipcRenderer.sendSync('get-app-version')
 })
-
 </script>
 
 <style scoped>

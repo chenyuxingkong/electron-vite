@@ -1,4 +1,5 @@
 import {getOpggHtml} from "../../../api/game-mod/lol/opgg";
+import {getFileName} from "../../fileUtils";
 
 const cheerio = require('cheerio');
 
@@ -34,7 +35,8 @@ export async function getOpggData(val) {
                     let getName = $(elem).find("a span")
                     heroInfo.name = $(getName).find('strong').text()
                     heroInfo.position = $(getName).find('small').text()
-                    heroInfo.img = $(elem).find('img')[0].attribs.src
+                    let img = getFileName($(elem).find('img')[0].attribs.src).split("/")
+                    heroInfo.img = img[img.length - 1]
                 } else if (i === 2) {
                     heroInfo.winRate = $(elem).text()
                 } else if (i === 3) {
@@ -42,7 +44,6 @@ export async function getOpggData(val) {
                 } else if (i === 4) {
                     heroInfo.hierarchy = $(elem).text()
                 }
-                // console.log(heroInfo);
             })
             response.data.push(heroInfo)
         }

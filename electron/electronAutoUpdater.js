@@ -1,5 +1,7 @@
 const {autoUpdater} = require("electron-updater");
 const {error, info} = require('./logger')
+const {ipcMain, dialog} = require('electron');
+
 
 exports.autoUpdate = function (mainWindow) {
     // 这个先设置为 false 不然就直接下载了
@@ -12,6 +14,7 @@ exports.autoUpdate = function (mainWindow) {
     // 当更新发生错误的时候触发。
     autoUpdater.on('error', (err) => {
         error('发送了错误', err)
+        mainWindow.webContents.send('update-err')
     })
     // 当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', (event, arg) => {
@@ -30,26 +33,28 @@ exports.autoUpdate = function (mainWindow) {
     })
     // 下载监听
     autoUpdater.on('download-progress', (progressObj) => {
-        info("下载监听", progressObj)
+        mainWindow.webContents.send('app-download-progress', progressObj)
     })
     // 下载完成
     autoUpdater.on('update-downloaded', () => {
         info("下载完成")
+        const dialogOpts = {
+            type: 'info',
+            buttons: ['重启', '之后'],
+            title: '应用程序更新完成',
+            detail: '已下载新版本,重新启动应用程序以更新应用.'
+        }
+        dialog.showMessageBox(dialogOpts).then((returnValue) => {
+            if (returnValue.response === 0) {
+                autoUpdater.quitAndInstall()
+            }
+        })
     })
-    // // 执行更新检查
-    // ipcMain.handle('check-update', () => {
-    //     autoUpdater.checkForUpdates().catch(err => {
-    //         error('网络连接问题', err)
-    //     })
-    // })
-    // // 退出并安装
-    // ipcMain.handle('confirm-update', () => {
-    //     autoUpdater.quitAndInstall()
-    // })
-    // // 手动下载更新文件
-    // ipcMain.handle('confirm-downloadUpdate', () => {
-    //     autoUpdater.downloadUpdate().then(r => {
-    //     })
-    // })
-
+    //
+    ipcMain.on('confirm-download-update', function (event, args) {
+        info("点击了确认更新")
+        autoUpdater.downloadUpdate().then(r => {
+            console.info(r)
+        })
+    })
 }

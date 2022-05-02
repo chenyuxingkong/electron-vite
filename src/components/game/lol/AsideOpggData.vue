@@ -10,13 +10,13 @@
         </div>
       </template>
     </div>
-    <el-table ref="tableRef" v-loading="loading" :data="heroWinRateRanking"
+    <el-table v-loading="loading" :data="heroWinRateRanking"
               :default-sort="{prop:'hierarchy',order:'ascending '}" :height="windowSize.h - 100"
               class="heroTable">
       <el-table-column type="index" width="40px"></el-table-column>
       <el-table-column label="头像" width="50px">
         <template #default="scope">
-          <img :alt="scope.row.name" :src="scope.row.img" style="height: 32px;width: 32px"/>
+          <img :alt="scope.row.name" :src="nationalCostumeAvatar(scope.row.img)" style="height: 32px;width: 32px"/>
         </template>
       </el-table-column>
       <el-table-column label="名称" prop="name">
@@ -49,7 +49,6 @@ import {getOpggData} from "../../../utils/game/lol/opggUtiks";
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
-const tableRef = ref(null)
 
 const loading = ref(true)
 
@@ -63,12 +62,12 @@ const version = ref('')
 // 获取英雄胜率
 const getHeroWinRateEvent = () => {
   loading.value = true
+  heroWinRateRanking.value = []
   getOpggData(winningPosition.value).then((res) => {
     version.value = res.version
     heroWinRateRanking.value = res.data
     setTimeout(() => {
       loading.value = false
-      tableRef.value.$refs.bodyWrapper.scrollTop = 0
     }, 200)
   })
 }
@@ -77,6 +76,11 @@ const getHeroWinRateEvent = () => {
 const clickToCheckTheWinningRate = (val) => {
   winningPosition.value = val
   getHeroWinRateEvent()
+}
+
+// 获取国服头像
+const nationalCostumeAvatar = (val) => {
+  return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`
 }
 
 onMounted(() => {

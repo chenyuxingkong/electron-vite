@@ -44,6 +44,7 @@ import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
 import {getSkinName} from "@/utils/game/lol/lolUtils";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 
 const windowSize = computed(() => {
@@ -57,6 +58,7 @@ const heroData = ref([])
 const position = ref('')
 // 版本
 const version = ref('')
+// 版本标志 flag
 const sameVersion = ref(false)
 
 // 查询英雄
@@ -89,7 +91,20 @@ function analysisOfTheHeroBranch(data) {
  * 查询版本是否对应
  */
 const checkVersion = () => {
-  console.log(getSkinName());
+  let nationalServiceVersion = 'LOLPRO ' + version.value + '.1.exe'
+  if (nationalServiceVersion === getSkinName()) {
+    sameVersion.value = true
+    ElMessage.success('当前版本一致')
+  } else {
+    ElMessageBox.alert('当前版本不一致,请及时更新,下载地址 http://leagueskin.net/p/download-mod-skin-2020-chn', '提示', {
+      type: 'warning'
+    }).then(() => {
+
+    }).catch(() => {
+
+    })
+    sameVersion.value = false
+  }
 }
 
 
@@ -102,6 +117,7 @@ onMounted((res) => {
       // 获取英雄数据
       getHeroData().then((res) => {
         version.value = res.version
+        checkVersion()
         res.hero.forEach(item => {
           // 根据英雄 id 来获取位置
           if (stringIsNotBlank(item.heroId)) {
