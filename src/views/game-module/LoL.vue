@@ -21,9 +21,6 @@
           </el-icon>
           &nbsp;&nbsp;换肤版本
         </el-button>
-        <el-button @click="turnOnAutoSkinning">
-          英雄检测
-        </el-button>
       </el-header>
       <el-main>
         <MainLoLData :data="selectHeroData"/>
@@ -48,7 +45,7 @@ import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
 import {getSkinName} from "@/utils/game/lol/lolUtils";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {turnOnAutoSkinning} from "../../utils/game/lol/riotGames";
+import {turnOffClientMonitoring, turnOnAutoSkinning} from "../../utils/game/lol/riotGames";
 
 
 const windowSize = computed(() => {
@@ -145,6 +142,10 @@ onMounted(() => {
 
 onActivated(() => {
   turnOnAutoSkinning()
+})
+
+onDeactivated(() => {
+  turnOffClientMonitoring()
 })
 
 

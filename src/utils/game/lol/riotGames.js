@@ -2,17 +2,25 @@ import axios from "axios";
 import store from '../../../store'
 import {openSkin} from "./lolUtils";
 import {ElMessage} from "element-plus";
-import router from '../../../router'
 
 const {exec} = require("child_process");
 const iconv = require('iconv-lite'); //用于解决中文输出乱码
 const getGameLaunchInfo = 'WMIC PROCESS WHERE name="LeagueClientUx.exe" GET commandline';
 const getRunStatusCMD = 'wmic process get name | find "LeagueClientUx.exe"'; //用于检测游戏是否运行
 
-let port; //端口
-let username; //用户名,默认riot
-let password; //密码
-let protocol; //协议,一般是https
+//端口
+let port;
+//用户名,默认riot
+let username = 'riot';
+//密码
+let password;
+//协议,一般是https
+let protocol = 'https';
+
+// 开启换肤标志
+let openSkinFlag = true
+// 开启运行监听
+let startRunningSign = true
 
 export function turnOnAutoSkinning() {
     try {
@@ -24,12 +32,12 @@ export function turnOnAutoSkinning() {
             const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
             if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
                 ElMessage.success('游戏已启动')
+                startRunningSign = true
                 //游戏启动了,进行下一步获取游戏路径
                 await clientListening()
             } else {
-                if (router.currentRoute.value.path === '/lol') {
+                if (startRunningSign) {
                     setTimeout(() => {
-                        console.log("判断启动")
                         turnOnAutoSkinning()
                     }, 1000)
                 }
@@ -40,46 +48,66 @@ export function turnOnAutoSkinning() {
     }
 }
 
+export function turnOffClientMonitoring() {
+    startRunningSign = false
+}
+
+// 开启客户端监听
 async function clientListening() {
     await getPortAndPassword()
     await getTheSelectedHero()
 }
 
+// 定时器
 let turnOnTheTimer = null
 
 async function getTheSelectedHero() {
-    // 根据 gameId 中的 id 去 actions 这个数组的 actorCellId 字段 如果一致那么就是你本人
-    // actions completed 是否选中了
-    // championId 英雄 id
     if (turnOnTheTimer === null) {
         turnOnTheTimer = setInterval(async () => {
-            if (router.currentRoute.value.path !== '/lol') {
+            // 离开了lol页面这个就没有必要要了
+            if (startRunningSign) {
+                const res = await callLOLApi('PATCH', '/lol-champ-select-legacy/v1/session/my-selection');
+                console.log(res)
+                if (res.status !== 404) {
+                    // analyticalData(res)
+                } else {
+                    openSkinFlag = true
+                }
+            } else {
                 clearInterval(turnOnTheTimer)
                 turnOnTheTimer = null
             }
-            const res = await callLOLApi('get', '/lol-champ-select/v1/session');
-            if (res.status !== 404) {
-                analyticalData(res)
-            } else {
-                openSkinFlag = true
-            }
+
         }, 1000)
     }
 }
 
-let openSkinFlag = true
 
+/**
+ * 根据 gameId 中的 id 去 actions 这个数组的 actorCellId 字段 如果一致那么就是你本人]
+ * actions completed 是否选中了
+ * championId 英雄 id
+ * @param val
+ */
 function analyticalData(val) {
+    console.log(val)
+    // 获取全部玩家的信息 不知道为什么是 一个数组里面还有一个数组
     let actions = val.actions[0]
+    // 获取你在这个房间的 id
     let gameId = val.gameId
     for (let i = 0; i < actions.length; i++) {
         let data = actions[i]
+        // 循环 根据你在这个房间的id来获取你的信息
         if (data.actorCellId === gameId) {
+            // 判断你是否选中了
             if (data.completed) {
                 let championId = data.championId
+                // 获取所有的英雄数据
                 let heroData = store.state.app.lol.heroData
                 for (let j = 0; j < heroData.length; j++) {
+                    // 循环根据 英雄id来获取英雄名
                     if (heroData[j].heroId.toString() === championId.toString()) {
+                        // 只能开启一次,开了就不能在开启了.
                         if (openSkinFlag) {
                             openSkinFlag = false
                             openSkin(heroData[j].alias)
@@ -100,13 +128,13 @@ function getPortAndPassword() {
             exec(getGameLaunchInfo, {encoding: 'buffer'}, function (err, stdout, stderr) {
                 var stdoutStr = iconv.decode(stdout, 'cp936');
                 // 通过正则表达式解析游戏启动参数
+                // 获取游戏的端口
                 let protReg = new RegExp('--app-port=([0-9]*)');
+                // 获取 token
                 let authTokenReg = new RegExp('--remoting-auth-token=([\\w-]*)');
 
                 port = stdoutStr.match(protReg)[1];
-                username = 'riot';
                 password = stdoutStr.match(authTokenReg)[1];
-                protocol = 'https';
                 console.log('port: ' + port);
                 console.log('auth-token: ' + password);
 
