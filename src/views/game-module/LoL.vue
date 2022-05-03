@@ -21,6 +21,9 @@
           </el-icon>
           &nbsp;&nbsp;换肤版本
         </el-button>
+        <el-button @click="turnOnAutoSkinning">
+          英雄检测
+        </el-button>
       </el-header>
       <el-main>
         <MainLoLData :data="selectHeroData"/>
@@ -45,6 +48,7 @@ import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
 import {getSkinName} from "@/utils/game/lol/lolUtils";
 import {ElMessage, ElMessageBox} from "element-plus";
+import {turnOnAutoSkinning} from "../../utils/game/lol/riotGames";
 
 
 const windowSize = computed(() => {
@@ -52,8 +56,7 @@ const windowSize = computed(() => {
 })
 // 搜索英雄名
 const heroName = ref('')
-// 英雄数据
-const heroData = ref([])
+
 // 英雄位置
 const position = ref('')
 // 版本
@@ -63,7 +66,7 @@ const sameVersion = ref(false)
 
 // 查询英雄
 const selectHeroData = computed(() => {
-  return heroData.value.filter(item => {
+  return store.state.app.lol.heroData.filter(item => {
     return item.keywords.indexOf(heroName.value) > -1 && item.positionStr.indexOf(position.value) > -1
   })
 })
@@ -107,8 +110,10 @@ const checkVersion = () => {
   }
 }
 
-
-onMounted((res) => {
+/**
+ * 获取国服的英雄数据
+ */
+const nationalServiceData = () => {
   qqHeroPosition().then((res) => {
     // 获取英雄位置，转成 json 对象
     let newString = JSON.parse(res.toString().split("=")[1].split(";")[0])
@@ -125,12 +130,21 @@ onMounted((res) => {
             // 拼接位置
             analysisOfTheHeroBranch(item)
             // 存放数据
-            heroData.value.push(item)
+            store.commit('app/pushHeroData', item)
           }
         })
       })
     }
   })
+}
+
+
+onMounted(() => {
+  nationalServiceData()
+})
+
+onActivated(() => {
+  turnOnAutoSkinning()
 })
 
 

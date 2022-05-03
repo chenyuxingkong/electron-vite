@@ -1,7 +1,6 @@
 // positionWinRate 胜率 positionPickRate 登场率 positionTier 层级
 // positions 位置
 
-import {toPercent} from "@/utils/percentageUtils";
 import {ElMessage} from "element-plus";
 import {getExtension} from "@/utils/fileUtils";
 import {stringIsBlank} from "@/utils/blankUtils.ts";
@@ -9,37 +8,6 @@ import {stringIsBlank} from "@/utils/blankUtils.ts";
 const fs = require('fs')
 const exec = require('child_process').exec
 
-
-// 获取 opgg 的英雄胜率信息
-export function analyzeHeroWinRate(val) {
-    let data = []
-    val.forEach(item => {
-        data.push({
-            name: item.name,
-            img: replaceAvatar(item.image_url),
-            position: getPosition(item.positions),
-            winRate: toPercent(item.positionWinRate),
-            appearanceRate: toPercent(item.positionPickRate),
-            hierarchy: item.positionTier
-        })
-        // console.log(item)
-    })
-    // console.log(data)
-    return data
-}
-
-function replaceAvatar(val) {
-    const imgList = val.split("/")
-    return "https://game.gtimg.cn/images/lol/act/img/champion/" + imgList[imgList.length - 1]
-}
-
-function getPosition(val) {
-    let name = ""
-    for (let i = 0; i < val.length; i++) {
-        name += (i === 0 ? '' : ',') + heroPositionChinese(val[i].name.toLowerCase())
-    }
-    return name
-}
 
 // 英雄位置转中文
 export const heroPositionChinese = (val) => {

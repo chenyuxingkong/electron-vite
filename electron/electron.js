@@ -46,6 +46,9 @@ function createWindow() {
     globalShortcut.register('CmdOrCtrl+R', () => {
         mainWindow.reload()
     })
+    globalShortcut.register('CmdOrCtrl+F12', () => {
+        mainWindow.webContents.openDevTools({mode: 'right'});
+    })
 }
 
 ipcMain.on('get-app-version', function (event, args) {
@@ -79,3 +82,5 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 })
+
+app.commandLine.appendSwitch('--ignore-certificate-errors', 'true') //忽略证书的检测

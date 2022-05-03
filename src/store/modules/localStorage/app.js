@@ -11,12 +11,18 @@ const state = () => ({
         width: 0,
         height: 0,
     },
+    lol: {
+        heroData: []
+    }
 })
 
 const mutations = {
     setWindowSize(state, val) {
         state.windowSize = val
     },
+    pushHeroData(state, val) {
+        state.lol.heroData.push(val)
+    }
 }
 
 export default {

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import {ElMessage} from 'element-plus'
 
 /**
  * 封装 axios请求
@@ -24,12 +23,6 @@ service.interceptors.response.use(
         return response.data
     },
     (error) => {
-        ElMessage({
-            message: error,
-            type: 'error',
-            duration: 2500,
-            showClose: true,
-        })
         return Promise.reject(error)
     },
 )
