@@ -3,6 +3,8 @@ const {app, BrowserWindow, ipcMain, globalShortcut} = require('electron');
 const {autoUpdate} = require("./electronAutoUpdater");
 
 const isDev = process.env.IS_DEV === "true";
+// 没有这个的话连接不上 lol websocket
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = '0';
 // 关闭 electron 的警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 

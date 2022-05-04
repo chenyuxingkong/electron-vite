@@ -1,7 +1,7 @@
 {
   "name": "cy-zs-vite",
   "private": true,
-  "version": "3.7.3",
+  "version": "3.7.4",
   "main": "electron/electron.js",
   "repository": {
     "type": "git",
@@ -16,8 +16,7 @@
     "electron:build.win": "npm run build && electron-builder --win --dir",
     "electron:build.linux": "npm run build && electron-builder --linux appImage",
     "electron:build.test": "npm run build && electron-builder --dir",
-    "electron:build.exe": "npm run build && electron-builder --win",
-    "electron:publish": "set GH_TOKEN=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 && npm run build && electron-builder --win --publish always"
+    "electron:build.exe": "npm run build && electron-builder --win"
   },
   "dependencies": {
     "@element-plus/icons": "^0.0.11",

@@ -1,9 +1,7 @@
 import axios from "axios";
-import {ElMessage} from "element-plus";
 // 没有这个 websocket 就连接不上 允许 未经授权
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 const WebSocket = require('ws');
+
 
 const {exec} = require("child_process");
 //用于解决中文输出乱码
@@ -46,7 +44,7 @@ export function turnOnAutoSkinning(val) {
             let newArr = arr.filter(i => i && i.trim()).filter(i => i.trim()); //过滤为空的字符串
             const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
             if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
-                ElMessage.success('游戏已启动')
+                // ElMessage.success('游戏已启动')
                 //游戏启动了,进行下一步获取游戏路径
                 await initializeTheClient()
             } else {
@@ -114,13 +112,13 @@ export async function lolWebSocket() {
         }
     }
     // 发生了错误要重新连接
-    ws.onerror = function () {
+    ws.onerror = function (e) {
         if (flag) {
             console.log('发生错误')
             turnOnAutoSkinning()
             flag = false
         }
-
+        console.error(e)
     }
     // 客户端关闭了也要重新连接
     ws.onclose = function () {

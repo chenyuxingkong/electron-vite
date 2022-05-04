@@ -1,5 +1,23 @@
 ## lol客户端的端口和密码都是会变化的所以你需要动态获取
+### 注意Authorization是必要参数,是通过Basic [账号:密码]的base64编码组合而成
+
 ### 获取当前队伍信息，除了选择界面，其他都是404
 GET /lol-champ-select/v1/session
 ## 这个是获取你选中的英雄 后面会携带一个英雄id
 GET /lol-loadouts/v4/loadouts/scope/champion/{id}
+
+### 接受对局
+POST /lol-matchmaking/v1/ready-check/accept
+Authorization: Basic cmlvdDoxbDRxaG1fblUwWUkyTGtDckZBRjR3
+
+### 获取英雄信息 这个是获取全部的 lol 英雄
+GET  /lol-champions/v1/owned-champions-minimal
+Authorization: Basic cmlvdDoxbDRxaG1fblUwWUkyTGtDckZBRjR3
+
+### 获取当前对局状态
+GET  /lol-lobby/v2/lobby/matchmaking/search-state
+Authorization: Basic cmlvdDo1RktYN0JYWlBjR1FBTFV4ak5UZlBR
+
+### 获取当前队伍信息，除了选择界面，其他都是404
+GET /lol-champ-select/v1/session
+Authorization: Basic cmlvdDo1RktYN0JYWlBjR1FBTFV4ak5UZlBR
