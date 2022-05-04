@@ -1,0 +1,5 @@
+## lol客户端的端口和密码都是会变化的所以你需要动态获取
+### 获取当前队伍信息，除了选择界面，其他都是404
+GET /lol-champ-select/v1/session
+## 这个是获取你选中的英雄 后面会携带一个英雄id
+GET /lol-loadouts/v4/loadouts/scope/champion/{id}

@@ -43,9 +43,9 @@ import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
-import {getSkinName} from "@/utils/game/lol/lolUtils";
+import {getSkinName, openSkin} from "@/utils/game/lol/lolUtils";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {turnOffClientMonitoring, turnOnAutoSkinning} from "../../utils/game/lol/riotGames";
+import {turnOnAutoSkinning, setCallback, closeLoLWebSocket} from "@/utils/game/lol/riotGames";
 
 
 const windowSize = computed(() => {
@@ -60,6 +60,7 @@ const position = ref('')
 const version = ref('')
 // 版本标志 flag
 const sameVersion = ref(false)
+let LeagueClienTimer = null
 
 // 查询英雄
 const selectHeroData = computed(() => {
@@ -135,19 +136,39 @@ const nationalServiceData = () => {
   })
 }
 
+const openSkinsAccordingToHeroes = () => {
+  // 监听 /lol-loadouts/v4/loadouts/scope/champion/
+  // 这个 api 这个只有点击锁定英雄才会触发 但是会跟着一个 英雄id所以要用到 indexOf
+  // 还有 /lol-champ-select/v1/session 这个也可以获取到你选中的 英雄但是太麻烦了，就没有用
+  setCallback('/lol-loadouts/v4/loadouts/scope/champion/', (data) => {
+    let index = data.uri.split("/")
+    let championId = index[index.length - 1]
+    let heroData = store.state.app.lol.heroData
+    for (let i = 0; i < heroData.length; i++) {
+      // 循环根据 英雄id来获取英雄名
+      if (heroData[i].heroId.toString() === championId.toString()) {
+        // 通过英雄名字来开启
+        openSkin(heroData[i].alias)
+        heroName.value = heroData[i].alias
+        return
+      }
+    }
+  })
+}
+
 
 onMounted(() => {
   nationalServiceData()
 })
 
 onActivated(() => {
-  turnOnAutoSkinning()
+  turnOnAutoSkinning(true)
+  openSkinsAccordingToHeroes()
 })
 
 onDeactivated(() => {
-  turnOffClientMonitoring()
+  closeLoLWebSocket()
 })
-
 
 </script>
 

@@ -6,16 +6,6 @@ export const gameData = [
         title: '英雄联盟',
         img: yxlm,
     },
-    {
-        path: '/youxi/lol',
-        title: '英雄联盟',
-        img: yxlm,
-    },
-    {
-        path: '/youxi/lol',
-        title: '英雄联盟',
-        img: yxlm,
-    }
 ]
 
 export const heroPosition = [

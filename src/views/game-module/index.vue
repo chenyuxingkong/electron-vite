@@ -22,8 +22,17 @@
  * @author xc
  * @date 2022-04-18 15:56
  */
-import {gameData} from "../../data/game";
-import router from '../../router';</script>
+import {gameData} from "@/data/game";
+import router from '../../router';
+
+
+onMounted(() => {
+  if (gameData.length === 1) {
+    router.push(gameData[0].path)
+  }
+})
+
+</script>
 
 <style scoped>
 .bottom {

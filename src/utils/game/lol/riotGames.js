@@ -1,12 +1,17 @@
 import axios from "axios";
-import store from '../../../store'
-import {openSkin} from "./lolUtils";
 import {ElMessage} from "element-plus";
+// 没有这个 websocket 就连接不上 允许 未经授权
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+const WebSocket = require('ws');
 
 const {exec} = require("child_process");
-const iconv = require('iconv-lite'); //用于解决中文输出乱码
+//用于解决中文输出乱码
+const iconv = require('iconv-lite');
+// lol 启动参数
 const getGameLaunchInfo = 'WMIC PROCESS WHERE name="LeagueClientUx.exe" GET commandline';
-const getRunStatusCMD = 'wmic process get name | find "LeagueClientUx.exe"'; //用于检测游戏是否运行
+//用于检测游戏是否运行
+const getRunStatusCMD = 'wmic process get name | find "LeagueClientUx.exe"';
 
 //端口
 let port;
@@ -16,13 +21,23 @@ let username = 'riot';
 let password;
 //协议,一般是https
 let protocol = 'https';
+// 保存的回调函数
+let globalCallback = new Map();
+// 重试连接
+let retryConnection = true
+// lolWebSocket
+let ws;
 
-// 开启换肤标志
-let openSkinFlag = true
-// 开启运行监听
-let startRunningSign = true
+export function setCallback(path, callback) {
+    if (callback !== null) {
+        globalCallback[path] = callback
+        console.log('global callback settled.')
+    }
+}
 
-export function turnOnAutoSkinning() {
+export function turnOnAutoSkinning(val) {
+    console.log('尝试连接')
+    if (val) retryConnection = true
     try {
         exec(getRunStatusCMD, {encoding: 'buffer'}, async function (err, stdout, stderr) {
             // 获取命令行执行的输出并解析
@@ -32,105 +47,121 @@ export function turnOnAutoSkinning() {
             const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
             if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
                 ElMessage.success('游戏已启动')
-                startRunningSign = true
                 //游戏启动了,进行下一步获取游戏路径
-                await clientListening()
+                await initializeTheClient()
             } else {
-                if (startRunningSign) {
+                if (retryConnection) {
                     setTimeout(() => {
                         turnOnAutoSkinning()
-                    }, 1000)
+                    }, 2000)
                 }
             }
         });
     } catch (err) {
         console.log(err)
+        return false;
     }
+
 }
 
-export function turnOffClientMonitoring() {
-    startRunningSign = false
-}
-
-// 开启客户端监听
-async function clientListening() {
-    await getPortAndPassword()
-    await getTheSelectedHero()
-}
-
-// 定时器
-let turnOnTheTimer = null
-
-async function getTheSelectedHero() {
-    if (turnOnTheTimer === null) {
-        turnOnTheTimer = setInterval(async () => {
-            // 离开了lol页面这个就没有必要要了
-            if (startRunningSign) {
-                const res = await callLOLApi('PATCH', '/lol-champ-select-legacy/v1/session/my-selection');
-                console.log(res)
-                if (res.status !== 404) {
-                    // analyticalData(res)
-                } else {
-                    openSkinFlag = true
-                }
-            } else {
-                clearInterval(turnOnTheTimer)
-                turnOnTheTimer = null
-            }
-
-        }, 1000)
-    }
+async function initializeTheClient() {
+    await lolWebSocket()
 }
 
 
 /**
- * 根据 gameId 中的 id 去 actions 这个数组的 actorCellId 字段 如果一致那么就是你本人]
- * actions completed 是否选中了
- * championId 英雄 id
- * @param val
+ * 连接 lol 的 WebSocket
+ * https://hextechdocs.dev/getting-started-with-the-lcu-websocket/
+ * 官网有介绍，
+ * 这个的方法借鉴了，下面这个地址
+ * https://gist.github.com/Pupix/eb662b1b784bb704a1390643738a8c15
  */
-function analyticalData(val) {
-    console.log(val)
-    // 获取全部玩家的信息 不知道为什么是 一个数组里面还有一个数组
-    let actions = val.actions[0]
-    // 获取你在这个房间的 id
-    let gameId = val.gameId
-    for (let i = 0; i < actions.length; i++) {
-        let data = actions[i]
-        // 循环 根据你在这个房间的id来获取你的信息
-        if (data.actorCellId === gameId) {
-            // 判断你是否选中了
-            if (data.completed) {
-                let championId = data.championId
-                // 获取所有的英雄数据
-                let heroData = store.state.app.lol.heroData
-                for (let j = 0; j < heroData.length; j++) {
-                    // 循环根据 英雄id来获取英雄名
-                    if (heroData[j].heroId.toString() === championId.toString()) {
-                        // 只能开启一次,开了就不能在开启了.
-                        if (openSkinFlag) {
-                            openSkinFlag = false
-                            openSkin(heroData[j].alias)
-                        }
-                        return
-                    }
+export async function lolWebSocket() {
+    // 保证只有一个在运行
+    let flag = true
+    await getPortAndPassword()
+    const url = `wss://riot:${password}@127.0.0.1:${port}/`
+    ws = new WebSocket(url)
+    // 打开连接
+    ws.onopen = function () {
+        console.log('连接成功')
+        flag = true
+        // 连接成功后 订阅客户端发出的数据
+        ws.send('[5, "OnJsonApiEvent"]')
+    }
+
+    // 获取发送的消息
+    ws.onmessage = function (e) {
+        try {
+            // 转成json会报错因为有些不是json
+            let json = JSON.parse(e.data)
+            // 第三个 参数才是 真正的数据
+            const res = json.slice(2)[0]
+            // 判断 消息要发送到哪里
+            if (globalCallback.hasOwnProperty(res.uri)) {
+                globalCallback[res.uri](res)
+                return;
+            }
+            // 如果想要 开启 模糊查询就打开这个
+            for (let key in globalCallback) {
+                if (res.uri.indexOf(key) > -1) {
+                    globalCallback[key](res)
+                    return
                 }
             }
-            return
+
+        } catch (e) {
+        }
+    }
+    // 发生了错误要重新连接
+    ws.onerror = function () {
+        if (flag) {
+            console.log('发生错误')
+            turnOnAutoSkinning()
+            flag = false
+        }
+
+    }
+    // 客户端关闭了也要重新连接
+    ws.onclose = function () {
+        if (flag) {
+            console.log('关闭')
+            turnOnAutoSkinning()
+            flag = false
         }
     }
 }
 
-//用于替代解析Lockfile文件的方法来获取端口号和密码， 原理：通过获取游戏启动参数来获取信息
+// 只有在退出lol页面时 才不重新连接
+export function closeLoLWebSocket() {
+    retryConnection = false
+    try {
+        if (ws !== null) {
+            ws.close()
+            ws = null
+        }
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+/**
+ *  用于替代解析Lockfile文件的方法来获取端口号和密码， *  原理：通过获取游戏启动参数来获取信息
+ *  https://hextechdocs.dev/getting-started-with-the-lcu-api/
+ *  lol 官网有说明
+ * @returns {Promise<unknown>}
+ */
 function getPortAndPassword() {
     return new Promise(resolve => {
         try {
+            // 解析 lol 的账号密码
             exec(getGameLaunchInfo, {encoding: 'buffer'}, function (err, stdout, stderr) {
-                var stdoutStr = iconv.decode(stdout, 'cp936');
+                const stdoutStr = iconv.decode(stdout, 'cp936');
                 // 通过正则表达式解析游戏启动参数
                 // 获取游戏的端口
                 let protReg = new RegExp('--app-port=([0-9]*)');
-                // 获取 token
+                // 获取 token 也就是密码
                 let authTokenReg = new RegExp('--remoting-auth-token=([\\w-]*)');
 
                 port = stdoutStr.match(protReg)[1];
@@ -138,7 +169,7 @@ function getPortAndPassword() {
                 console.log('port: ' + port);
                 console.log('auth-token: ' + password);
 
-                var authStr = Buffer.from(username + ':' + password);
+                const authStr = Buffer.from(username + ':' + password);
                 console.log('authStr:' + 'Basic ' + authStr.toString('base64'));
                 resolve(true);
             })
@@ -148,13 +179,18 @@ function getPortAndPassword() {
             resolve(false);
         }
     })
-
 }
 
-//拼接并异步调用lolapi
+/**
+ * 调用 lol 的 api
+ * @param method 请求方法
+ * @param route 路由
+ * @returns {Promise<unknown>}
+ */
 function callLOLApi(method, route) {
     return new Promise(resolve => {
         try {
+            // 密码是需要变成 base64 不然无法调用
             const authStr = Buffer.from(username + ':' + password);
             axios({
                 method: method,

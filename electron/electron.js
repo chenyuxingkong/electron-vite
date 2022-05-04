@@ -43,7 +43,7 @@ function createWindow() {
     //去掉顶部菜单
     mainWindow.setMenu(null);
 
-    globalShortcut.register('CmdOrCtrl+R', () => {
+    globalShortcut.register('Shift+Ctrl+R', () => {
         mainWindow.reload()
     })
     globalShortcut.register('CmdOrCtrl+F12', () => {
@@ -83,4 +83,5 @@ app.on('window-all-closed', () => {
     }
 })
 
-app.commandLine.appendSwitch('--ignore-certificate-errors', 'true') //忽略证书的检测
+//忽略证书的检测
+app.commandLine.appendSwitch('--ignore-certificate-errors', 'true')
