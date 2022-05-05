@@ -53,7 +53,7 @@
 
 <script name="Breadcrumb" setup>
 import router from "../../router";
-import {ArrowLeftBold, ArrowRightBold, RefreshLeft, SemiSelect, CloseBold, Operation} from "@element-plus/icons"
+import {ArrowLeftBold, ArrowRightBold, CloseBold, Operation, RefreshLeft, SemiSelect} from "@element-plus/icons"
 import logger from "@/utils/logger";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {convertSize} from '@/utils/bToMb'
@@ -101,8 +101,7 @@ const appClose = () => {
   ipcRenderer.send('app-close')
 }
 
-const settingsDialog = ref(true)
-
+const settingsDialog = ref(false)
 
 let box = null;
 
