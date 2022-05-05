@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ElMessage} from "element-plus";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -34,7 +35,6 @@ export function setCallback(path, callback) {
 }
 
 export function turnOnAutoSkinning(val) {
-    console.log('尝试连接')
     if (val) retryConnection = true
     try {
         exec(getRunStatusCMD, {encoding: 'buffer'}, async function (err, stdout, stderr) {
@@ -44,10 +44,10 @@ export function turnOnAutoSkinning(val) {
             let newArr = arr.filter(i => i && i.trim()).filter(i => i.trim()); //过滤为空的字符串
             const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
             if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
-                // ElMessage.success('游戏已启动')
                 //游戏启动了,进行下一步获取游戏路径
                 await initializeTheClient()
             } else {
+                // 退出页面后 就不在尝试连接
                 if (retryConnection) {
                     setTimeout(() => {
                         turnOnAutoSkinning()
@@ -75,7 +75,7 @@ async function initializeTheClient() {
  * https://gist.github.com/Pupix/eb662b1b784bb704a1390643738a8c15
  */
 export async function lolWebSocket() {
-    // 保证只有一个在运行
+    // 保证只能有一个在重试连接
     let flag = true
     await getPortAndPassword()
     const url = `wss://riot:${password}@127.0.0.1:${port}/`
@@ -83,6 +83,7 @@ export async function lolWebSocket() {
     // 打开连接
     ws.onopen = function () {
         console.log('连接成功')
+        ElMessage.success('连接成功')
         flag = true
         // 连接成功后 订阅客户端发出的数据
         ws.send('[5, "OnJsonApiEvent"]')

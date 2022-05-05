@@ -93,16 +93,15 @@ function analysisOfTheHeroBranch(data) {
  */
 const checkVersion = () => {
   let nationalServiceVersion = 'LOLPRO ' + version.value + '.1.exe'
+  window.open('http://leagueskin.net/p/download-mod-skin-2020-chn')
+
   if (nationalServiceVersion === getSkinName()) {
     sameVersion.value = true
-    ElMessage.success('当前版本一致')
   } else {
     ElMessageBox.alert('当前版本不一致,请及时更新,下载地址 http://leagueskin.net/p/download-mod-skin-2020-chn', '提示', {
       type: 'warning'
     }).then(() => {
-
-    }).catch(() => {
-
+    }).catch((e) => {
     })
     sameVersion.value = false
   }

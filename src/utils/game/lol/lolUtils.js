@@ -4,6 +4,7 @@
 import {ElMessage} from "element-plus";
 import {getExtension} from "@/utils/fileUtils";
 import {stringIsBlank} from "@/utils/blankUtils.ts";
+import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 
 const fs = require('fs')
 const exec = require('child_process').exec
@@ -66,8 +67,9 @@ export function getSkinName() {
             }
         }
     } catch (e) {
-        ElMessage.error("LOL SKIN 文件不存在，请先下载")
+        throw new BizException(ExceptionEnum.MESSAGE_HTML_ERROR, "<span style='color: teal'>LOL SKIN</span> 文件不存在，请先下载")
     }
+    return ""
 }
 
 function open() {
