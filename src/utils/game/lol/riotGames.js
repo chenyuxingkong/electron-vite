@@ -25,47 +25,43 @@ let globalCallback = new Map();
 // 重试连接
 let retryConnection = true
 // lolWebSocket
-let ws;
+let ws = null;
 
 export function setCallback(path, callback) {
     if (callback !== null) {
         globalCallback[path] = callback
-        console.log('global callback settled.')
     }
 }
 
-export function turnOnAutoSkinning(val) {
+export function openLoLConnection(val) {
     if (val) retryConnection = true
     try {
-        exec(getRunStatusCMD, {encoding: 'buffer'}, async function (err, stdout, stderr) {
-            // 获取命令行执行的输出并解析
-            const stdoutStr = iconv.decode(stdout, 'cp936');
-            const arr = stdoutStr.split("\r\r\n");
-            let newArr = arr.filter(i => i && i.trim()).filter(i => i.trim()); //过滤为空的字符串
-            const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
-            if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
-                //游戏启动了,进行下一步获取游戏路径
-                await initializeTheClient()
-            } else {
-                // 退出页面后 就不在尝试连接
-                if (retryConnection) {
+        // 不是lol页面就不要连接了
+        if (retryConnection) {
+            exec(getRunStatusCMD, {encoding: 'buffer'}, async function (err, stdout, stderr) {
+                // 获取命令行执行的输出并解析
+                const stdoutStr = iconv.decode(stdout, 'cp936');
+                const arr = stdoutStr.split("\r\r\n");
+                let newArr = arr.filter(i => i && i.trim()).filter(i => i.trim()); //过滤为空的字符串
+                const lolAppName = newArr[0]; //获取到了进程名则说明游戏正在运行
+                if (typeof (lolAppName) != 'undefined' && lolAppName.trim() !== '') { //这里需要利用短路功能
+                    //游戏启动了,进行下一步获取游戏路径
+                    if (ws === null) {
+                        await lolWebSocket()
+                    }
+                } else {
+                    // 退出页面后 就不在尝试连接
                     setTimeout(() => {
-                        turnOnAutoSkinning()
+                        openLoLConnection()
                     }, 2000)
                 }
-            }
-        });
+            });
+        }
     } catch (err) {
         console.log(err)
         return false;
     }
-
 }
-
-async function initializeTheClient() {
-    await lolWebSocket()
-}
-
 
 /**
  * 连接 lol 的 WebSocket
@@ -82,7 +78,6 @@ export async function lolWebSocket() {
     ws = new WebSocket(url)
     // 打开连接
     ws.onopen = function () {
-        console.log('连接成功')
         ElMessage.success('连接成功')
         flag = true
         // 连接成功后 订阅客户端发出的数据
@@ -108,15 +103,14 @@ export async function lolWebSocket() {
                     return
                 }
             }
-
+            globalCallback['message'](res)
         } catch (e) {
         }
     }
     // 发生了错误要重新连接
     ws.onerror = function (e) {
         if (flag) {
-            console.log('发生错误')
-            turnOnAutoSkinning()
+            openLoLConnection()
             flag = false
         }
         console.error(e)
@@ -124,8 +118,7 @@ export async function lolWebSocket() {
     // 客户端关闭了也要重新连接
     ws.onclose = function () {
         if (flag) {
-            console.log('关闭')
-            turnOnAutoSkinning()
+            openLoLConnection()
             flag = false
         }
     }
@@ -142,7 +135,6 @@ export function closeLoLWebSocket() {
     } catch (e) {
         console.log(e)
     }
-
 }
 
 /**

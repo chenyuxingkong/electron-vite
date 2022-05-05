@@ -25,8 +25,7 @@
 import {gameData} from "@/data/game";
 import router from '../../router';
 
-
-onMounted(() => {
+onActivated(() => {
   if (gameData.length === 1) {
     router.push(gameData[0].path)
   }

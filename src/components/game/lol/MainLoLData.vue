@@ -1,10 +1,10 @@
 <template>
   <el-main>
-    <ul ref="heroList" :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
+    <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
         <li>
           <div class="hero_mask">
-            <div class="lol_skin" @click="clickToSkin(item)">
+            <div class="lol_skin" @click="openSkin(item.alias)">
               打开换肤
             </div>
             <div class="lol_skin" @click="clickToViewHeroDetails">
@@ -54,33 +54,13 @@ const windowSize = computed(() => {
   return store.state.app.windowSize
 })
 
-const heroList = ref(null)
-
-
-watch(() => props.data, () => {
-  try {
-    heroList.value.scrollTop = 0
-  } catch (e) {
-
-  }
-})
-
-
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
-}
-
-const clickToSkin = ({alias}) => {
-  if (stringIsBlank(alias)) {
-    return ElMessage.error('没有找到英雄。')
-  }
-  openSkin(alias)
 }
 
 const clickToViewHeroDetails = () => {
   ElMessageBox.alert('该功能正在制作中', '提示', {}).then(() => {
   }).catch(() => {
-
   })
 }
 
@@ -199,7 +179,7 @@ const clickToViewHeroDetails = () => {
       letter-spacing: -0.9px;
       font-style: normal;
       background: rgb(53, 59, 62);
-      padding: 1px 6px 0px 4px;
+      padding: 1px 6px 0 4px;
     }
   }
 

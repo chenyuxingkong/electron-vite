@@ -1,9 +1,6 @@
 <script setup>
 import store from './store'
 
-
-let ipcRenderer = require('electron').ipcRenderer
-
 /**
  * 获取窗口大小
  */
@@ -22,8 +19,6 @@ onMounted(() => {
 window.onresize = () => {
   store.commit('app/setWindowSize', getWindowSize())
 }
-
-
 
 </script>
 

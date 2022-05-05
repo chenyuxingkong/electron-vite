@@ -4,13 +4,12 @@
       <CyMenu></CyMenu>
     </el-aside>
     <el-container>
-      <el-header class="header"
-                 style="height: 35px;margin-bottom: 5px;box-shadow : 0 12px 32px 4px rgba(0, 0, 0, .04), 0 8px 20px rgba(0, 0, 0, .08)">
+      <el-header class="app-header">
         <Breadcrumb></Breadcrumb>
       </el-header>
       <el-main class="main">
         <router-view v-slot='{ Component }'>
-          <transition mode='out-in' name='fade-transform'>
+          <transition mode='out-in' name='scale'>
             <keep-alive>
               <component :is='Component'/>
             </keep-alive>
@@ -37,6 +36,25 @@ import store from '../store'
 </script>
 
 <style lang='scss' scoped>
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.5s ease;
+}
+
+
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.app-header {
+  height: 35px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  box-shadow: 0 12px 32px 4px rgba(0, 0, 0, .04), 0 8px 20px rgba(0, 0, 0, .08)
+}
+
 .main {
   .el-container {
     height: 100%;

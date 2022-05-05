@@ -43,9 +43,9 @@ import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
-import {getSkinName, openSkin} from "@/utils/game/lol/lolUtils";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {turnOnAutoSkinning, setCallback, closeLoLWebSocket} from "@/utils/game/lol/riotGames";
+import {createARoomType, getSkinName, openSkin} from "@/utils/game/lol/lolUtils";
+import {ElMessageBox} from "element-plus";
+import {openLoLConnection, setCallback, closeLoLWebSocket} from "@/utils/game/lol/riotGames";
 
 
 const windowSize = computed(() => {
@@ -88,19 +88,23 @@ function analysisOfTheHeroBranch(data) {
   }
 }
 
+const {shell} = require('electron');
+
 /**
  * 查询版本是否对应
  */
 const checkVersion = () => {
   let nationalServiceVersion = 'LOLPRO ' + version.value + '.1.exe'
-  window.open('http://leagueskin.net/p/download-mod-skin-2020-chn')
-
-  if (nationalServiceVersion === getSkinName()) {
+  if (nationalServiceVersion === getSkinName()
+  ) {
     sameVersion.value = true
   } else {
-    ElMessageBox.alert('当前版本不一致,请及时更新,下载地址 http://leagueskin.net/p/download-mod-skin-2020-chn', '提示', {
-      type: 'warning'
+    ElMessageBox.confirm('当前版本不一致,请及时更新。', '提示', {
+      type: 'warning',
+      confirmButtonText: '前往下载',
+      cancelButtonText: '取消'
     }).then(() => {
+      shell.openExternal('http://leagueskin.net/p/download-mod-skin-2020-chn');
     }).catch((e) => {
     })
     sameVersion.value = false
@@ -119,7 +123,6 @@ const nationalServiceData = () => {
       // 获取英雄数据
       getHeroData().then((res) => {
         version.value = res.version
-        checkVersion()
         res.hero.forEach(item => {
           // 根据英雄 id 来获取位置
           if (stringIsNotBlank(item.heroId)) {
@@ -130,6 +133,7 @@ const nationalServiceData = () => {
             store.commit('app/pushHeroData', item)
           }
         })
+        checkVersion()
       })
     }
   })
@@ -158,16 +162,14 @@ const openSkinsAccordingToHeroes = () => {
 
 onMounted(() => {
   nationalServiceData()
+  createARoomType()
 })
 
 onActivated(() => {
-  turnOnAutoSkinning(true)
+  openLoLConnection(true)
   openSkinsAccordingToHeroes()
 })
 
-onDeactivated(() => {
-  closeLoLWebSocket()
-})
 
 </script>
 

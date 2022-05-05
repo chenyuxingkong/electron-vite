@@ -16,7 +16,18 @@ ul {
   list-style-type: disc;
   margin-block-start: 1em;
   margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
   padding-inline-start: 40px;
+}
+
+:deep(.el-dialog) {
+  border-radius: 4px;
+}
+
+:deep(.el-dialog__header) {
+  border-bottom: 1px solid #ebeef5;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  margin-right: 0;
 }

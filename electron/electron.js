@@ -1,6 +1,7 @@
 const path = require('path');
 const {app, BrowserWindow, ipcMain, globalShortcut} = require('electron');
-const {autoUpdate} = require("./electronAutoUpdater");
+const {autoUpdate} = require("./electron-auto-updater");
+const {ipcUtils} = require("./ipc-utils");
 
 const isDev = process.env.IS_DEV === "true";
 // 没有这个的话连接不上 lol websocket
@@ -15,7 +16,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: isDev ? 1800 : 1280,
         height: 720,
-        // frame: false, //取消window自带的关闭最小化等
+        frame: false, //取消window自带的关闭最小化等
         resizable: false,//禁止改变主窗口尺寸
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -53,22 +54,13 @@ function createWindow() {
     })
 }
 
-ipcMain.on('get-app-version', function (event, args) {
-    event.returnValue = app.getVersion()
-})
-
-ipcMain.on('check-for-updates', function (event, args) {
-    if (!isDev) {
-        // 只有在正式环境中才更新
-        autoUpdate(mainWindow)
-    }
-})
 
 // 此方法将在 Electron 完成时调用
 // 初始化并准备好创建浏览器窗口。
 // 某些 API 只能在此事件发生后才能使用。
 app.whenReady().then(() => {
     createWindow();
+    ipcUtils(isDev, mainWindow)
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icons is clicked and there are no other windows open.

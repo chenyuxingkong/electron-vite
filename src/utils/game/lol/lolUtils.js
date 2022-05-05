@@ -1,10 +1,11 @@
 // positionWinRate 胜率 positionPickRate 登场率 positionTier 层级
 // positions 位置
 
-import {ElMessage} from "element-plus";
 import {getExtension} from "@/utils/fileUtils";
 import {stringIsBlank} from "@/utils/blankUtils.ts";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
+import {setCallback} from "@/utils/game/lol/riotGames";
+import router from "@/router";
 
 const fs = require('fs')
 const exec = require('child_process').exec
@@ -32,9 +33,8 @@ export const heroPositionChinese = (val) => {
 
 // 下面是打开皮肤盒子的
 export function openSkin(val) {
-    if (!fs.existsSync("C:\\Fraps")) {
-        ElMessage.error("LOL SKIN 文件不存在，请先下载")
-        return
+    if (stringIsBlank(val)) {
+        throw new BizException(ExceptionEnum.MESSAGE_ERROR, '没有找到英雄。')
     }
     changeSetting('C:\\Fraps\\data\\Default\\Config.ini', val)
     changeSetting('C:\\Fraps\\data\\My\\Config.ini', val)
@@ -80,6 +80,26 @@ function open() {
     exec("taskkill /f /im " + "\"" + skinName + "\"", function (error, stdout, stderr) {
         exec("\"C:\\Fraps\\" + skinName + "\"", function (error, stdout, stderr) {
         })
+    })
+}
+
+/**
+ * 监听创建的房间类型
+ */
+export const createARoomType = () => {
+    // 这个是 用来判断 是否进入的房间 里面一个 map 字段
+    setCallback('/lol-gameflow/v1/session', function ({data}) {
+        if (data.phase === 'Lobby') {
+            switch (data.map.gameMode) {
+                case 'CLASSIC':
+                    router.push('/lol')
+                    break;
+                case 'TFT':
+                    router.push('/tft')
+                    break;
+            }
+            console.log(data)
+        }
     })
 }
 
