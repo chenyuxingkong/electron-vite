@@ -44,7 +44,8 @@ import {getHeroData, qqHeroPosition} from '@/api/game-mod/lol/lol-qq';
 import {stringIsNotBlank} from '@/utils/blank-utils.ts';
 import {createARoomType, getSkinName, openSkin} from '@/utils/game/lol/lolUtils';
 import {ElMessageBox} from "element-plus";
-import {openLoLConnection, setCallback, callLOLApi} from "@/utils/game/lol/riotGames";
+import {openLoLConnection, setCallback} from "@/utils/game/lol/riotGames";
+
 
 const {shell} = require('electron');
 
@@ -58,6 +59,7 @@ const version = ref('')
 const sameVersion = ref(false)
 //
 const mainLoLData = ref(null)
+
 
 // 查询英雄
 const selectHeroData = computed(() => {

@@ -20,6 +20,7 @@ router.beforeEach((to, from, next) => {
     if (!to.meta.lolSocket) {
         closeLoLWebSocket()
     }
+    console.log(to)
     next()
 })
 

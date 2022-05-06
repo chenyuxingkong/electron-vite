@@ -5,7 +5,7 @@ export const menuData = [
         name: '首页',
     },
     {
-        path: '/youxi',
+        path: '/youxi/index',
         icon: 'youxi',
         name: '游戏',
     }

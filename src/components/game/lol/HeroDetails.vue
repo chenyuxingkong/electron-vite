@@ -4,7 +4,8 @@
   </el-container>
 </template>
 
-<script name="HeroDetails" setup>/**
+<script name="HeroDetails" setup>
+/**
  * <p>
  * 描述：
  * </p>
@@ -14,6 +15,7 @@
 import router from "@/router";
 import {listIsNotBlanK, stringIsBlank} from "@/utils/blank-utils.ts";
 import {ElMessageBox} from "element-plus";
+import {openBrowserPage} from "@/utils/electron-utils";
 
 const data = ref('')
 const positionList = ref([])
@@ -34,16 +36,13 @@ const parseHeroData = () => {
     console.log(data.value);
   }
   positionList.value = data.value.positionStr.split('，')
-  console.log(positionList.value);
   let url = ''
   if (listIsNotBlanK(positionList.value)) {
-    url = `https://www.op.gg/champions/${data.value.name}/${positionList.value[0]}/build`
+    url = `https://www.op.gg/champions/${data.value.alias}/${positionList.value[0]}/build`
   } else {
-    url = `https://www.op.gg/champions/${data.value.name}`
+    url = `https://www.op.gg/champions/${data.value.alias}`
   }
-
-
-
+  openBrowserPage(url)
 }
 
 

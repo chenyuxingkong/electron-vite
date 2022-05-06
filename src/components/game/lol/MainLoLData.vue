@@ -3,14 +3,6 @@
     <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
         <li @click="seeDetails(item)">
-          <!--          <div class="hero_mask">-->
-          <!--            <div class="lol_skin" @click="openSkin(item.alias)">-->
-          <!--              打开换肤-->
-          <!--            </div>-->
-          <!--            <div class="lol_skin" @click="clickToViewHeroDetails">-->
-          <!--              查看详情-->
-          <!--            </div>-->
-          <!--          </div>-->
           <div class="hero_img">
             <div class="hero_position">
               <span>
@@ -29,15 +21,14 @@
         </li>
       </template>
     </ul>
+    <HeroDetails v-if="HeroDetailsDialog" :data="HeroDetailsData"/>
   </el-main>
 </template>
 
 <script name="MainLoLData" setup>
 import store from "@/store";
-import {stringIsBlank} from "@/utils/blank-utils.ts";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {heroPositionChinese, openSkin} from "@/utils/game/lol/lolUtils";
-import router from "@/router";
+import {heroPositionChinese} from "@/utils/game/lol/lolUtils";
+import HeroDetails from "@/components/game/lol/HeroDetails";
 
 /**
  * <p>
@@ -51,21 +42,20 @@ const props = defineProps({
     type: Array,
   }
 })
+const HeroDetailsData = ref('')
+
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
+
+const HeroDetailsDialog = ref(false)
 
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
 const seeDetails = (val) => {
-  router.push({
-    name: '/heroDetaols',
-    params: {
-      data: JSON.stringify(val)
-    }
-  })
+  HeroDetailsData.value = val
 }
 
 
