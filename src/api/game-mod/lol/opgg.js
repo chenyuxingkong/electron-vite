@@ -10,6 +10,10 @@ export function getOpggHtml(position) {
     })
 }
 
-export function heroDetailsApi() {
-
+export function heroDetailsApi(url) {
+    return request({
+        url: url,
+        method: 'get',
+        headers: {'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'},
+    })
 }

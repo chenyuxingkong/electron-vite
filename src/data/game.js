@@ -2,7 +2,7 @@ import yxlm from '../assets/img/yxlm.jpg'
 
 export const gameData = [
     {
-        path: '/lol',
+        path: '/youxi/lol',
         title: '英雄联盟',
         img: yxlm,
     },

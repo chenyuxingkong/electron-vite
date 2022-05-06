@@ -21,7 +21,7 @@
         </li>
       </template>
     </ul>
-    <HeroDetails v-if="HeroDetailsDialog" :data="HeroDetailsData"/>
+    <HeroDetails v-if="HeroDetailsDialog" :data="HeroDetailsData" @close="HeroDetailsDialog = false"/>
   </el-main>
 </template>
 
@@ -48,7 +48,7 @@ const windowSize = computed(() => {
   return store.state.app.windowSize
 })
 
-const HeroDetailsDialog = ref(false)
+const HeroDetailsDialog = ref(true)
 
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
@@ -56,6 +56,7 @@ const heroImg = (val) => {
 
 const seeDetails = (val) => {
   HeroDetailsData.value = val
+  HeroDetailsDialog.value = true
 }
 
 
