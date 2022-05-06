@@ -36,13 +36,13 @@
  * @author xc
  * @date 2022-04-12 18:58
  */
-import store from '../../../store'
-import AsideOpggData from "@/components/game/lol/AsideOpggData";
+import store from '@/store'
+import AsideOpggData from '@/components/game/lol/AsideOpggData';
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
-import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
-import {stringIsNotBlank} from "@/utils/blankUtils.ts";
-import {createARoomType, getSkinName, openSkin} from "@/utils/game/lol/lolUtils";
+import {getHeroData, qqHeroPosition} from '@/api/game-mod/lol/lol-qq';
+import {stringIsNotBlank} from '@/utils/blankUtils.ts';
+import {createARoomType, getSkinName, openSkin} from '@/utils/game/lol/lolUtils';
 import {ElMessageBox} from "element-plus";
 import {openLoLConnection, setCallback} from "@/utils/game/lol/riotGames";
 
@@ -177,34 +177,6 @@ onActivated(() => {
   width: 66px;
   height: 65px;
 }
-
-
-.imgtextlist {
-  float: left;
-  padding: 30px 0 0;
-  position: relative;
-  overflow-x: hidden;
-
-  li {
-    float: left;
-    width: 90px;
-    height: 100px;
-    margin-bottom: 22px;
-    text-align: center;
-    line-height: 15px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-  }
-}
-
 
 .tab {
   display: flex;
