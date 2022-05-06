@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside width="400px">
+    <el-aside width="600px">
       <AsideOpggData/>
     </el-aside>
     <el-container>
@@ -8,19 +8,18 @@
         <el-input v-model="heroName" :suffix-icon="Search" clearable placeholder="搜索" style="width: 120px;"></el-input>
         <el-divider direction="vertical"/>
         <el-radio-group v-model="position">
-          <el-radio label="">全部</el-radio>
+          <el-radio-button label="">全部</el-radio-button>
           <template v-for="item in heroPosition">
-            <el-radio :label="item.value">{{ item.label }}</el-radio>
+            <el-radio-button :label="item.value">{{ item.label }}</el-radio-button>
           </template>
         </el-radio-group>
-        <el-divider direction="vertical"/>
-        <el-button :type="sameVersion ? 'success' : 'warning'" @click="checkVersion">
-          <el-icon>
-            <check v-if="sameVersion"/>
-            <circle-close-filled v-else/>
-          </el-icon>
-          &nbsp;&nbsp;换肤版本
-        </el-button>
+        <!--        <el-button :type="sameVersion ? 'success' : 'warning'" @click="checkVersion">-->
+        <!--          <el-icon>-->
+        <!--            <check v-if="sameVersion"/>-->
+        <!--            <circle-close-filled v-else/>-->
+        <!--          </el-icon>-->
+        <!--          &nbsp;&nbsp;换肤版本-->
+        <!--        </el-button>-->
       </el-header>
       <el-main>
         <MainLoLData :data="selectHeroData"/>
@@ -37,7 +36,7 @@
  * @author xc
  * @date 2022-04-12 18:58
  */
-import store from '../../store'
+import store from '../../../store'
 import AsideOpggData from "@/components/game/lol/AsideOpggData";
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
@@ -45,7 +44,7 @@ import {getHeroData, qqHeroPosition} from "@/api/game-mod/lol/lol-qq";
 import {stringIsNotBlank} from "@/utils/blankUtils.ts";
 import {createARoomType, getSkinName, openSkin} from "@/utils/game/lol/lolUtils";
 import {ElMessageBox} from "element-plus";
-import {openLoLConnection, setCallback, closeLoLWebSocket} from "@/utils/game/lol/riotGames";
+import {openLoLConnection, setCallback} from "@/utils/game/lol/riotGames";
 
 
 const windowSize = computed(() => {

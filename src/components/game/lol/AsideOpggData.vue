@@ -13,13 +13,24 @@
     <el-table v-loading="loading" :data="heroWinRateRanking"
               :default-sort="{prop:'hierarchy',order:'ascending '}" :height="windowSize.h - 100"
               class="heroTable">
-      <el-table-column type="index" width="40px"></el-table-column>
-      <el-table-column label="头像" width="50px">
+      <el-table-column width="60">
+        <template #default="scope">
+          {{ scope.$index + 1 }}
+          <el-button v-if="scope.row.riseInRank > 0" :icon="CaretTop" style="color: green" type="text">
+            {{ scope.row.riseInRank }}
+          </el-button>
+          <el-button v-else-if="scope.row.riseInRank < 0" :icon="CaretBottom" style="color: red" type="text">
+            {{ Math.abs(scope.row.riseInRank) }}
+          </el-button>
+          <i v-else>= 0</i>
+        </template>
+      </el-table-column>
+      <el-table-column label="头像" width="50">
         <template #default="scope">
           <img :alt="scope.row.name" :src="nationalCostumeAvatar(scope.row.img)" style="height: 32px;width: 32px"/>
         </template>
       </el-table-column>
-      <el-table-column label="名称" prop="name">
+      <el-table-column label="名称" prop="name" show-overflow-tooltip width="80">
         <template #default="scope">
             <span>
               <strong> {{ scope.row.name }}</strong>
@@ -27,9 +38,17 @@
              </span>
         </template>
       </el-table-column>
-      <el-table-column label="胜率" prop="winRate" sortable width="70px"></el-table-column>
-      <el-table-column label="出场率" prop="appearanceRate" sortable width="80px"></el-table-column>
-      <el-table-column label="层级" prop="hierarchy" sortable width="70px"></el-table-column>
+      <el-table-column label="胜率" prop="winRate" sortable width="70"></el-table-column>
+      <el-table-column label="出场率" prop="appearanceRate" sortable width="80"></el-table-column>
+      <el-table-column label="禁用率" prop="banRate" sortable width="80"></el-table-column>
+      <el-table-column label="层级" prop="hierarchy" sortable width="70"></el-table-column>
+      <el-table-column label="weakAgainst" prop="weakAgainst" width="120">
+        <template #default="scope">
+          <template v-for="item in scope.row.weakAgainst">
+            <img :alt="item" :src="nationalCostumeAvatar(item)" style="height: 32px;width: 32px"/>
+          </template>
+        </template>
+      </el-table-column>
     </el-table>
   </el-main>
 </template>
@@ -37,7 +56,9 @@
 <script name="AsideOpggData" setup>
 import {heroPosition} from "@/data/game";
 import store from "@/store";
-import {getOpggData} from "../../../utils/game/lol/opggUtiks";
+import {getOpggDataNewHtml, getOpggDataOldHtml} from "@/utils/game/lol/opggUtiks";
+import {stringIsNotBlank} from "@/utils/blankUtils.ts";
+import {CaretTop, CaretBottom} from "@element-plus/icons";
 
 /**
  * <p>
@@ -63,13 +84,22 @@ const version = ref('')
 const getHeroWinRateEvent = () => {
   loading.value = true
   heroWinRateRanking.value = []
-  getOpggData(winningPosition.value).then((res) => {
-    version.value = res.version
-    heroWinRateRanking.value = res.data
-    setTimeout(() => {
-      loading.value = false
-    }, 200)
+  getOpggDataNewHtml(winningPosition.value).then(async (res) => {
+    if (res.data.length === 0) {
+      await getOpggDataOldHtml(winningPosition.value).then((oldRes) => {
+        res = oldRes
+      })
+    }
+    updateData(res)
   })
+}
+
+const updateData = (res) => {
+  version.value = res.version
+  heroWinRateRanking.value = res.data
+  setTimeout(() => {
+    loading.value = false
+  }, 200)
 }
 
 // 点击位置查询
@@ -81,6 +111,14 @@ const clickToCheckTheWinningRate = (val) => {
 // 获取国服头像
 const nationalCostumeAvatar = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`
+}
+
+const rankingInformation = (val) => {
+  if (stringIsNotBlank(val)) {
+    if (val > 0) {
+      return `<i style="color: green">${val}</i>`
+    }
+  }
 }
 
 onMounted(() => {

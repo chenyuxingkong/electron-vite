@@ -1,16 +1,16 @@
 <template>
-  <el-main>
+  <el-main style="margin-top: 10px">
     <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
         <li>
-          <div class="hero_mask">
-            <div class="lol_skin" @click="openSkin(item.alias)">
-              打开换肤
-            </div>
-            <div class="lol_skin" @click="clickToViewHeroDetails">
-              查看详情
-            </div>
-          </div>
+          <!--          <div class="hero_mask">-->
+          <!--            <div class="lol_skin" @click="openSkin(item.alias)">-->
+          <!--              打开换肤-->
+          <!--            </div>-->
+          <!--            <div class="lol_skin" @click="clickToViewHeroDetails">-->
+          <!--              查看详情-->
+          <!--            </div>-->
+          <!--          </div>-->
           <div class="hero_img">
             <div class="hero_position">
               <span>
@@ -109,8 +109,8 @@ const clickToViewHeroDetails = () => {
 
   li {
     float: left;
-    width: 100px;
-    height: 120px;
+    width: 80px;
+    height: 100px;
     margin: 10px;
     padding: 5px;
     text-align: center;
@@ -131,7 +131,7 @@ const clickToViewHeroDetails = () => {
   li:hover {
     cursor: pointer;
     border: 1px solid #b59758;
-    transform: scale(1.2);
+    transform: scale(1.1);
 
     .hero_mask {
       display: block;
@@ -161,7 +161,7 @@ const clickToViewHeroDetails = () => {
 
   .hero_name {
     background-color: #000;
-    line-height: 30px;
+    line-height: 10px;
     color: white;
     display: flex;
     justify-content: center;
@@ -174,7 +174,7 @@ const clickToViewHeroDetails = () => {
 
     i {
       color: rgb(255, 255, 255);
-      line-height: 15px;
+      line-height: 10px;
       font-size: 12px;
       letter-spacing: -0.9px;
       font-style: normal;

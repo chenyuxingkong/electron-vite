@@ -1,16 +1,40 @@
 @font-face {
     font-family: "iconfont"; /* Project id 3323507 */
-    src: url('iconfont.woff2?t=1649846327298') format('woff2'),
-    url('iconfont.woff?t=1649846327298') format('woff'),
-    url('iconfont.ttf?t=1649846327298') format('truetype');
+    src: url('iconfont.woff2?t=1651804955161') format('woff2'),
+    url('iconfont.woff?t=1651804955161') format('woff'),
+    url('iconfont.ttf?t=1651804955161') format('truetype');
 }
 
 .iconfont {
-    font-family: "iconfont" !important;
+    font-family: "iconfont", serif !important;
     font-size: 16px;
     font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-lol-adc:before {
+    content: "\e605";
+}
+
+.icon-lol-mid:before {
+    content: "\e606";
+}
+
+.icon-lol-jungle:before {
+    content: "\e607";
+}
+
+.icon-lol-top:before {
+    content: "\e608";
+}
+
+.icon-lol-support:before {
+    content: "\e609";
+}
+
+.icon-lol-all:before {
+    content: "\e603";
 }
 
 .icon-lol:before {

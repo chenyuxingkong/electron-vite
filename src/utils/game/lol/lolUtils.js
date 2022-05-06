@@ -4,8 +4,7 @@
 import {getExtension} from "@/utils/fileUtils";
 import {stringIsBlank} from "@/utils/blankUtils.ts";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
-import {setCallback} from "@/utils/game/lol/riotGames";
-import router from "@/router";
+import {currentRoom, setCallback} from "@/utils/game/lol/riotGames";
 
 const fs = require('fs')
 const exec = require('child_process').exec
@@ -88,18 +87,8 @@ function open() {
  */
 export const createARoomType = () => {
     // 这个是 用来判断 是否进入的房间 里面一个 map 字段
-    setCallback('/lol-gameflow/v1/session', function ({data}) {
-        if (data.phase === 'Lobby') {
-            switch (data.map.gameMode) {
-                case 'CLASSIC':
-                    router.push('/lol')
-                    break;
-                case 'TFT':
-                    router.push('/tft')
-                    break;
-            }
-            console.log(data)
-        }
+    setCallback('/lol-gameflow/v1/session', function (data) {
+        currentRoom(data.data)
     })
 }
 

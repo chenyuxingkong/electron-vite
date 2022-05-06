@@ -1,5 +1,7 @@
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
+import router from "@/router";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -82,6 +84,11 @@ export async function lolWebSocket() {
         flag = true
         // 连接成功后 订阅客户端发出的数据
         ws.send('[5, "OnJsonApiEvent"]')
+        // 发送请求判断现在是什么模式
+        callLOLApi('get', '/lol-gameflow/v1/session').then((data) => {
+            currentRoom(data)
+        })
+
     }
 
     // 获取发送的消息
@@ -155,7 +162,11 @@ function getPortAndPassword() {
                 // 获取 token 也就是密码
                 let authTokenReg = new RegExp('--remoting-auth-token=([\\w-]*)');
 
-                port = stdoutStr.match(protReg)[1];
+                try {
+                    port = stdoutStr.match(protReg)[1];
+                } catch (e) {
+                    throw new BizException(ExceptionEnum.LOGICAL_ERROR, "请使用管理员权限打开改页面。")
+                }
                 password = stdoutStr.match(authTokenReg)[1];
                 console.log('port: ' + port);
                 console.log('auth-token: ' + password);
@@ -197,6 +208,16 @@ function callLOLApi(method, route) {
             resolve(false);
         }
     })
+}
+
+export function currentRoom(val) {
+    if (val.phase === 'Lobby') {
+        if (val.map.gameMode === 'TFT') {
+            router.push('/tft')
+        } else {
+            router.push('/lol')
+        }
+    }
 }
 
 

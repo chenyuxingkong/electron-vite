@@ -41,10 +41,10 @@
         </el-dropdown>
       </div>
       <div>
-        <el-button :icon="SemiSelect" class="no_drag" type="text" @click="miniWindow"></el-button>
+        <el-button :icon="SemiSelect" class="no_drag" title="最小化" type="text" @click="miniWindow"></el-button>
       </div>
       <div>
-        <el-button :icon="CloseBold" class="no_drag" type="text" @click="appClose"></el-button>
+        <el-button :icon="CloseBold" class="no_drag" title="关闭" type="text" @click="appClose"></el-button>
       </div>
     </div>
   </div>
@@ -101,7 +101,7 @@ const appClose = () => {
   ipcRenderer.send('app-close')
 }
 
-const settingsDialog = ref(true)
+const settingsDialog = ref(false)
 
 
 let box = null;

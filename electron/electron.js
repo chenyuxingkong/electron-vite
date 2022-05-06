@@ -1,6 +1,5 @@
 const path = require('path');
-const {app, BrowserWindow, ipcMain, globalShortcut} = require('electron');
-const {autoUpdate} = require("./electron-auto-updater");
+const {app, BrowserWindow, globalShortcut} = require('electron');
 const {ipcUtils} = require("./ipc-utils");
 
 const isDev = process.env.IS_DEV === "true";
