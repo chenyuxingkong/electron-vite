@@ -2,7 +2,6 @@ const {ipcMain, app} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
 
 exports.ipcUtils = function (isDev, mainWindow) {
-    console.log(mainWindow)
     // 获取版本号
     ipcMain.on('get-app-version', function (event, args) {
         event.returnValue = app.getVersion()

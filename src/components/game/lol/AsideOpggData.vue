@@ -57,7 +57,7 @@
 import {heroPosition} from "@/data/game";
 import store from "@/store";
 import {getOpggDataNewHtml, getOpggDataOldHtml} from "@/utils/game/lol/opggUtiks";
-import {stringIsNotBlank} from "@/utils/blankUtils.ts";
+import {stringIsNotBlank} from "@/utils/blank-utils.ts";
 import {CaretTop, CaretBottom} from "@element-plus/icons";
 
 /**

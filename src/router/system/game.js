@@ -11,13 +11,19 @@ const router = [
             },
             {
                 path: '/lol',
-                meta: {title: '英雄联盟', onRoutes: '/youxi', lolSocket: true},
+                meta: {title: '召唤师峡谷', onRoutes: '/youxi', lolSocket: true},
                 component: () => import('../../views/game-module/lol/LoL.vue')
             },
             {
                 path: '/tft',
-                meta: {title: '英雄联盟', onRoutes: '/youxi', lolSocket: true},
+                meta: {title: '云顶之弈', onRoutes: '/youxi', lolSocket: true},
                 component: () => import('../../views/game-module/lol/TFT.vue')
+            },
+            {
+                path: '/heroDetaols',
+                name: '/heroDetaols',
+                meta: {title: '英雄详情', onRoutes: '/youxi', lolSocket: true},
+                component: () => import('../../views/game-module/lol/HeroDetails.vue')
             },
         ]
     },

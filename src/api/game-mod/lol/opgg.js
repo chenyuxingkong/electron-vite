@@ -10,3 +10,6 @@ export function getOpggHtml(position) {
     })
 }
 
+export function heroDetailsApi() {
+
+}

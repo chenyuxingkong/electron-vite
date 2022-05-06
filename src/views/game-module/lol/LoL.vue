@@ -22,7 +22,7 @@
         <!--        </el-button>-->
       </el-header>
       <el-main>
-        <MainLoLData :data="selectHeroData"/>
+        <MainLoLData ref="mainLoLData" :data="selectHeroData"/>
       </el-main>
     </el-container>
   </el-container>
@@ -41,25 +41,23 @@ import AsideOpggData from '@/components/game/lol/AsideOpggData';
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from '@/api/game-mod/lol/lol-qq';
-import {stringIsNotBlank} from '@/utils/blankUtils.ts';
+import {stringIsNotBlank} from '@/utils/blank-utils.ts';
 import {createARoomType, getSkinName, openSkin} from '@/utils/game/lol/lolUtils';
 import {ElMessageBox} from "element-plus";
-import {openLoLConnection, setCallback} from "@/utils/game/lol/riotGames";
+import {openLoLConnection, setCallback, callLOLApi} from "@/utils/game/lol/riotGames";
 
+const {shell} = require('electron');
 
-const windowSize = computed(() => {
-  return store.state.app.windowSize
-})
 // 搜索英雄名
 const heroName = ref('')
-
 // 英雄位置
 const position = ref('')
 // 版本
 const version = ref('')
 // 版本标志 flag
 const sameVersion = ref(false)
-let LeagueClienTimer = null
+//
+const mainLoLData = ref(null)
 
 // 查询英雄
 const selectHeroData = computed(() => {
@@ -87,7 +85,6 @@ function analysisOfTheHeroBranch(data) {
   }
 }
 
-const {shell} = require('electron');
 
 /**
  * 查询版本是否对应
@@ -152,6 +149,7 @@ const openSkinsAccordingToHeroes = () => {
         // 通过英雄名字来开启
         openSkin(heroData[i].alias)
         heroName.value = heroData[i].alias
+        mainLoLData.value.seeDetails(heroData[i])
         return
       }
     }

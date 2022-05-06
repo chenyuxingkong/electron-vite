@@ -1,5 +1,5 @@
 import {ElMessage, ElMessageBox} from "element-plus";
-import {stringIsBlank} from "../blankUtils";
+import {stringIsBlank} from "../blank-utils";
 
 export const ExceptionEnum = {
     SUCCESS: {code: 200, name: '成功', turnOnHtml: false},
@@ -19,7 +19,6 @@ class ExceptionCode {
 }
 
 export class BizException extends Error {
-    public code: ExceptionCode;
     public message: string;
 
     constructor(code: ExceptionCode)
@@ -39,12 +38,13 @@ export class BizException extends Error {
                 showClose: true
             })
         } else if (code.code > 2000 && code.code < 3000) {
-            ElMessageBox.alert('', '提示', {
+            ElMessageBox.alert(this.message, '提示', {
                 type: 'error',
-                message: this.message,
                 dangerouslyUseHTMLString: code.turnOnHtml,
-            }).then(r => {
+            }).then(() => {
+
             }).catch(() => {
+
             })
         }
     }

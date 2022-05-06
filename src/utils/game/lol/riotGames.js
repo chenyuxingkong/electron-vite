@@ -88,7 +88,6 @@ export async function lolWebSocket() {
         callLOLApi('get', '/lol-gameflow/v1/session').then((data) => {
             currentRoom(data)
         })
-
     }
 
     // 获取发送的消息
@@ -189,7 +188,7 @@ function getPortAndPassword() {
  * @param route 路由
  * @returns {Promise<unknown>}
  */
-function callLOLApi(method, route) {
+export function callLOLApi(method, route) {
     return new Promise(resolve => {
         try {
             // 密码是需要变成 base64 不然无法调用

@@ -2,7 +2,7 @@
   <el-main style="margin-top: 10px">
     <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
-        <li>
+        <li @click="seeDetails(item)">
           <!--          <div class="hero_mask">-->
           <!--            <div class="lol_skin" @click="openSkin(item.alias)">-->
           <!--              打开换肤-->
@@ -34,9 +34,10 @@
 
 <script name="MainLoLData" setup>
 import store from "@/store";
-import {stringIsBlank} from "@/utils/blankUtils.ts";
+import {stringIsBlank} from "@/utils/blank-utils.ts";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {heroPositionChinese, openSkin} from "@/utils/game/lol/lolUtils";
+import router from "@/router";
 
 /**
  * <p>
@@ -58,11 +59,20 @@ const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
-const clickToViewHeroDetails = () => {
-  ElMessageBox.alert('该功能正在制作中', '提示', {}).then(() => {
-  }).catch(() => {
+const seeDetails = (val) => {
+  router.push({
+    name: '/heroDetaols',
+    params: {
+      data: JSON.stringify(val)
+    }
   })
 }
+
+
+// 想要父组件调用需要暴露出去
+defineExpose({
+  seeDetails
+})
 
 </script>
 
