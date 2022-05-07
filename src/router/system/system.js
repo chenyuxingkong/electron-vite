@@ -1,7 +1,10 @@
+import layout from '../../layout/index.vue'
+import {createNameComponent} from "@/router/createNode";
+
 const router = [
     {
         path: '/',
-        component: () => import('@/views/index.vue'),
+        component: layout,
         redirect: '/home',
         children: [
             {
@@ -9,12 +12,13 @@ const router = [
                 ///user-:afterUser(.*)这个是会匹配user开头的路由
                 path: '/:catchAll(.*)*',
                 name: '404',
-                component: () => import('../../views/system/404.vue'),
+                meta: {title: '404'},
+                component: createNameComponent(() => import('../../views/system/404.vue')),
             },
             {
                 path: '/home',
                 meta: {title: '首页'},
-                component: () => import('@/views/system/Home.vue'),
+                component: createNameComponent(() => import('@/views/system/Home.vue')),
             }
         ]
 
