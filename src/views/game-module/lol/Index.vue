@@ -1,11 +1,18 @@
 <template>
-  <router-view v-slot='{ Component }'>
-    <transition mode='out-in' name='scale'>
-      <keep-alive>
-        <component :is='Component'/>
-      </keep-alive>
-    </transition>
-  </router-view>
+  <el-container>
+    <div class="lol-setting" @click="lolSetting">
+      <el-icon :size="27">
+        <setting/>
+      </el-icon>
+    </div>
+    <router-view v-slot='{ Component }'>
+      <transition mode='out-in' name='scale'>
+        <keep-alive>
+          <component :is='Component'/>
+        </keep-alive>
+      </transition>
+    </router-view>
+  </el-container>
 </template>
 
 <script name="index" setup>
@@ -17,6 +24,11 @@
  * @date 2022-05-07 10:31
  */
 import {closeLoLWebSocket, currentRoom, openLoLConnection, setCallback} from "@/utils/game/lol/riot-games";
+import {getLolConfig} from "@/store/modules/local-store/LolConfig";
+
+const lolSetting = () => {
+  getLolConfig()
+}
 
 onMounted(() => {
   // 获取全部的房间类型
@@ -24,7 +36,6 @@ onMounted(() => {
     currentRoom(data.data)
   })
 })
-
 
 onActivated(() => {
   // 打开 lol 连接
@@ -37,6 +48,27 @@ onDeactivated(() => {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.lol-setting {
+  position: absolute;
+  right: 24px;
+  white-space: normal;
+  word-break: break-all;
+  top: 40%;
+  z-index: 999;
+  cursor: pointer;
 
+  .el-icon {
+    border-radius: 4px;
+    background-color: #409eff;
+    padding: 5px;
+    color: white;
+  }
+
+  .el-icon:hover {
+    box-shadow: 0px 12px 32px 4px rgba(0, 0, 0, .04), 0px 8px 20px rgba(0, 0, 0, .08)
+  }
+
+
+}
 </style>

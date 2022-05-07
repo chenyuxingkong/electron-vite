@@ -77,9 +77,6 @@ import logo from '@/assets/img/logo.png'
  * @author xc
  * @date 2022-04-12 17:41
  */
-const isCollapse = computed(() => {
-  return store.state.app.isCollapse
-})
 
 const onRoutes = computed(() => {
   if (router.currentRoute.value.meta.onRoutes) {

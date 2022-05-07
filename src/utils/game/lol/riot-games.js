@@ -2,6 +2,7 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 import router from "@/router";
+import {stringIsBlank} from "@/utils/blank-utils.ts";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -88,6 +89,8 @@ export async function lolWebSocket() {
         callLOLApi('get', '/lol-gameflow/v1/session').then((data) => {
             currentRoom(data)
         })
+
+
     }
 
     // 获取发送的消息
@@ -189,8 +192,11 @@ function getPortAndPassword() {
  * @returns {Promise<unknown>}
  */
 export function callLOLApi(method, route) {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
         try {
+            if (stringIsBlank(password)) {
+                await getPortAndPassword()
+            }
             // 密码是需要变成 base64 不然无法调用
             const authStr = Buffer.from(username + ':' + password);
             axios({
@@ -210,6 +216,7 @@ export function callLOLApi(method, route) {
 }
 
 export function currentRoom(val) {
+    // ARAM 大乱斗
     if (val.phase === 'Lobby') {
         if (val.map.gameMode === 'TFT') {
             router.push('/youxi/riot/tft')

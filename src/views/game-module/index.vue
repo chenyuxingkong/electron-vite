@@ -26,9 +26,9 @@ import {gameData} from "@/data/game";
 import router from '../../router';
 
 onActivated(() => {
-  if (gameData.length === 1) {
-    router.push(gameData[0].path)
-  }
+  // if (gameData.length === 1) {
+  //   router.push(gameData[0].path)
+  // }
 })
 
 </script>
