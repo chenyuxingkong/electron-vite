@@ -1,30 +1,23 @@
 <template>
-  <el-dialog
-      v-model="dialog"
-      :close-on-click-modal="false"
-      :title="data.name"
-      draggable
-      @closed="emit('close')">
+  <el-container>
+    <el-header>
+      <el-radio-group v-model="position">
+        <template v-for="item in positionList">
+          <el-radio-button :label="item">
+            {{ heroPositionChinese(item) }}
+          </el-radio-button>
+        </template>
+      </el-radio-group>
+    </el-header>
     <el-container>
-      <el-header>
-        <el-radio-group v-model="position">
-          <template v-for="item in positionList">
-            <el-radio-button :label="item">
-              {{ heroPositionChinese(item) }}
-            </el-radio-button>
-          </template>
-        </el-radio-group>
-      </el-header>
-      <el-container>
-        <el-aside width="120px">
-          天赋
-        </el-aside>
-        <el-main>
-          主体
-        </el-main>
-      </el-container>
+      <el-aside width="120px">
+        天赋
+      </el-aside>
+      <el-main>
+        主体
+      </el-main>
     </el-container>
-  </el-dialog>
+  </el-container>
 </template>
 
 <script name="HeroDetails" setup>
@@ -38,8 +31,8 @@
 import router from "@/router";
 import {listIsNotBlanK, stringIsBlank} from "@/utils/blank-utils.ts";
 import {ElMessageBox} from "element-plus";
-import {heroPositionChinese} from "../../../utils/game/lol/lolUtils";
-import {heroDetailsApi} from "../../../api/game-mod/lol/opgg";
+import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
+import {heroDetailsApi} from "@/api/game-mod/lol/opgg";
 
 const props = defineProps({
   data: {}
@@ -53,6 +46,7 @@ const position = ref('')
 const cheerio = require('cheerio')
 
 const parseHeroData = () => {
+  console.log(router.currentRoute.value.params.data)
   data.value = '{"heroId":"1","name":"黑暗之女","alias":"Annie","title":"安妮","roles":["mage"],"isWeekFree":"0","attack":"2","defense":"3","magic":"10","difficulty":"6","selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/1.ogg","banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/1.ogg","isARAMweekfree":"0","ispermanentweekfree":"0","changeLabel":"无改动","goldPrice":"4800","couponPrice":"2000","camp":"","campId":"","keywords":"安妮,黑暗之女,火女,Annie,anni,heianzhinv,huonv,an,hazn,hn","position":{"mid":"104","adc":"12"},"positionStr":"mid，adc"}'
   // router.currentRoute.value.params.data
   if (stringIsBlank(data.value)) {

@@ -26,7 +26,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
-    HeroDetails: typeof import('./src/components/game/lol/HeroDetails.vue')['default']
+    HeroDetails: typeof import('./src/views/game-module/lol/HeroDetails.vue')['default']
     Loading: typeof import('element-plus/es')['ElLoadingDirective']
     MainLoLData: typeof import('./src/components/game/lol/MainLoLData.vue')['default']
     Settings: typeof import('./src/components/system/Settings.vue')['default']

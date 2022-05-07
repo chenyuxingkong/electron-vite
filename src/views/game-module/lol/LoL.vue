@@ -42,9 +42,9 @@ import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from '@/api/game-mod/lol/lol-qq';
 import {stringIsNotBlank} from '@/utils/blank-utils.ts';
-import {createARoomType, getSkinName, openSkin} from '@/utils/game/lol/lolUtils';
+import {getSkinName, openSkin} from '@/utils/game/lol/lol-utils';
 import {ElMessageBox} from "element-plus";
-import {openLoLConnection, setCallback} from "@/utils/game/lol/riotGames";
+import {setCallback} from "@/utils/game/lol/riot-games";
 
 
 const {shell} = require('electron');
@@ -161,11 +161,9 @@ const openSkinsAccordingToHeroes = () => {
 
 onMounted(() => {
   nationalServiceData()
-  createARoomType()
 })
 
 onActivated(() => {
-  openLoLConnection(true)
   openSkinsAccordingToHeroes()
 })
 

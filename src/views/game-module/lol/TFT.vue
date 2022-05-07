@@ -12,16 +12,6 @@
  * @author xc
  * @date 2022-05-05 15:10
  */
-import {createARoomType} from "@/utils/game/lol/lolUtils";
-import {openLoLConnection} from "@/utils/game/lol/riotGames";
-
-onMounted(() => {
-  createARoomType()
-})
-
-onActivated(() => {
-  openLoLConnection(true)
-})
 
 
 </script>

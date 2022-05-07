@@ -21,14 +21,14 @@
         </li>
       </template>
     </ul>
-    <HeroDetails v-if="HeroDetailsDialog" :data="HeroDetailsData" @close="HeroDetailsDialog = false"/>
   </el-main>
 </template>
 
 <script name="MainLoLData" setup>
 import store from "@/store";
-import {heroPositionChinese} from "@/utils/game/lol/lolUtils";
-import HeroDetails from "@/components/game/lol/HeroDetails";
+import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
+import HeroDetails from "@/views/game-module/lol/HeroDetails";
+import router from "@/router";
 
 /**
  * <p>
@@ -42,21 +42,23 @@ const props = defineProps({
     type: Array,
   }
 })
-const HeroDetailsData = ref('')
 
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
 
-const HeroDetailsDialog = ref(true)
 
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
-const seeDetails = (val) => {
-  HeroDetailsData.value = val
-  HeroDetailsDialog.value = true
+const seeDetails = (val) => {//1  3 7 6 16 19
+  router.push({
+    name: 'heroDetails',
+    params: {
+      data: JSON.stringify(val)
+    }
+  })
 }
 
 

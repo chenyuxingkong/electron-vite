@@ -84,7 +84,7 @@ export async function lolWebSocket() {
         flag = true
         // 连接成功后 订阅客户端发出的数据
         ws.send('[5, "OnJsonApiEvent"]')
-        // 发送请求判断现在是什么模式
+        // 发送请求判断现在是什么房间
         callLOLApi('get', '/lol-gameflow/v1/session').then((data) => {
             currentRoom(data)
         })
@@ -212,9 +212,9 @@ export function callLOLApi(method, route) {
 export function currentRoom(val) {
     if (val.phase === 'Lobby') {
         if (val.map.gameMode === 'TFT') {
-            router.push('/tft')
+            router.push('/youxi/riot/tft')
         } else {
-            router.push('/lol')
+            router.push('/youxi/riot/lol')
         }
     }
 }

@@ -21,8 +21,8 @@
 </template>
 
 <script name="index" setup>
-import CyMenu from '../layout/menu/menu.vue'
-import Breadcrumb from '../layout/header/Breadcrumb.vue'
+import CyMenu from './menu/menu.vue'
+import Breadcrumb from './header/Breadcrumb.vue'
 import store from '../store'
 
 /**
@@ -35,7 +35,7 @@ import store from '../store'
 
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .scale-enter-active,
 .scale-leave-active {
   transition: all 0.5s ease;
@@ -47,6 +47,9 @@ import store from '../store'
   opacity: 0;
   transform: scale(0.9);
 }
+</style>
+
+<style lang='scss' scoped>
 
 .app-header {
   height: 35px;

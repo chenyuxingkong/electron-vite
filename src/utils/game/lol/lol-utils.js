@@ -4,7 +4,6 @@
 import {getExtension} from "@/utils/file-utils";
 import {stringIsBlank} from "@/utils/blank-utils.ts";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
-import {currentRoom, setCallback} from "@/utils/game/lol/riotGames";
 
 const fs = require('fs')
 const exec = require('child_process').exec
@@ -79,16 +78,6 @@ function open() {
     exec("taskkill /f /im " + "\"" + skinName + "\"", function (error, stdout, stderr) {
         exec("\"C:\\Fraps\\" + skinName + "\"", function (error, stdout, stderr) {
         })
-    })
-}
-
-/**
- * 监听创建的房间类型
- */
-export const createARoomType = () => {
-    // 这个是 用来判断 是否进入的房间 里面一个 map 字段
-    setCallback('/lol-gameflow/v1/session', function (data) {
-        currentRoom(data.data)
     })
 }
 
