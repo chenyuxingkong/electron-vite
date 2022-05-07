@@ -52,7 +52,7 @@ const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
-const seeDetails = (val) => {//1  3 7 6 16 19
+const seeDetails = (val) => {
   router.push({
     name: 'heroDetails',
     params: {

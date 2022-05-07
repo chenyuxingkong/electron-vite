@@ -2,6 +2,7 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 import router from "@/router";
+import store from "@/store"
 import {stringIsBlank} from "@/utils/blank-utils.ts";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
@@ -216,12 +217,14 @@ export function callLOLApi(method, route) {
 }
 
 export function currentRoom(val) {
-    // ARAM 大乱斗
-    if (val.phase === 'Lobby') {
-        if (val.map.gameMode === 'TFT') {
-            router.push('/youxi/riot/tft')
-        } else {
-            router.push('/youxi/riot/lol')
+    if (store.state.config.riotConfig.automaticJump) {
+        // ARAM 大乱斗
+        if (val.phase === 'Lobby') {
+            if (val.map.gameMode === 'TFT') {
+                router.push('/youxi/riot/tft')
+            } else {
+                router.push('/youxi/riot/lol')
+            }
         }
     }
 }

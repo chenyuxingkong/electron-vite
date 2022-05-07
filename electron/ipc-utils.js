@@ -1,5 +1,6 @@
 const {ipcMain, app} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
+const path = require('path');
 
 exports.ipcUtils = function (isDev, mainWindow) {
     // 获取版本号
@@ -20,6 +21,10 @@ exports.ipcUtils = function (isDev, mainWindow) {
     // 关闭 app
     ipcMain.on('app-close', function (event, args) {
         mainWindow.close()
+    })
+
+    ipcMain.on('app-path', function (event, args) {
+        event.returnValue = app.getPath('appData') + '\\cy-zs\\Data'
     })
 }
 

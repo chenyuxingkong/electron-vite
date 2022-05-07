@@ -1,14 +1,13 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import system from './system/system'
 import game from "./system/game";
 
-const routerHistory = createWebHistory('/h5/');
 let routes = []
 routes = routes.concat(system, game)
 
 
 export const router = createRouter({
-    history: routerHistory,
+    history: createWebHashHistory(),
     routes
 })
 

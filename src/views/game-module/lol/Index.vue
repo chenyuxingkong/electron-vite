@@ -1,9 +1,10 @@
 <template>
   <el-container>
-    <div class="lol-setting" @click="lolSetting">
+    <div class="lol-setting" @click="riotSetting">
       <el-icon :size="27">
         <setting/>
       </el-icon>
+      <RiotConfig v-if="riotConfigDialog" @close="riotConfigDialog = false"/>
     </div>
     <router-view v-slot='{ Component }'>
       <transition mode='out-in' name='scale'>
@@ -24,13 +25,18 @@
  * @date 2022-05-07 10:31
  */
 import {closeLoLWebSocket, currentRoom, openLoLConnection, setCallback} from "@/utils/game/lol/riot-games";
-import {getLolConfig} from "@/store/modules/local-store/LolConfig";
+import {initRoitConfig} from "../../../store/modules/local-store/riot-config";
+import RiotConfig from "../../../components/game/lol/RiotConfig";
 
-const lolSetting = () => {
-  getLolConfig()
+const riotConfigDialog = ref(false)
+
+const riotSetting = () => {
+  riotConfigDialog.value = true
 }
 
 onMounted(() => {
+  // 初始化配置
+  initRoitConfig()
   // 获取全部的房间类型
   setCallback('/lol-gameflow/v1/session', function (data) {
     currentRoom(data.data)

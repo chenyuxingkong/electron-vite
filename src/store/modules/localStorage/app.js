@@ -12,8 +12,8 @@ const state = () => ({
         height: 0,
     },
     lol: {
-        heroData: []
-    }
+        heroData: [],
+    },
 })
 
 const mutations = {
@@ -22,7 +22,7 @@ const mutations = {
     },
     pushHeroData(state, val) {
         state.lol.heroData.push(val)
-    }
+    },
 }
 
 export default {

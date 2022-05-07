@@ -13,13 +13,6 @@
             <el-radio-button :label="item.value">{{ item.label }}</el-radio-button>
           </template>
         </el-radio-group>
-        <!--        <el-button :type="sameVersion ? 'success' : 'warning'" @click="checkVersion">-->
-        <!--          <el-icon>-->
-        <!--            <check v-if="sameVersion"/>-->
-        <!--            <circle-close-filled v-else/>-->
-        <!--          </el-icon>-->
-        <!--          &nbsp;&nbsp;换肤版本-->
-        <!--        </el-button>-->
       </el-header>
       <el-main>
         <MainLoLData ref="mainLoLData" :data="selectHeroData"/>
@@ -149,9 +142,13 @@ const openSkinsAccordingToHeroes = () => {
       // 循环根据 英雄id来获取英雄名
       if (heroData[i].heroId.toString() === championId.toString()) {
         // 通过英雄名字来开启
-        openSkin(heroData[i].alias)
-        heroName.value = heroData[i].alias
-        mainLoLData.value.seeDetails(heroData[i])
+        if (store.state.config.riotConfig.autoSkin) {
+          openSkin(heroData[i].alias)
+        }
+        if (store.state.config.riotConfig.getHeroesAutomatically) {
+          heroName.value = heroData[i].alias
+          mainLoLData.value.seeDetails(heroData[i])
+        }
         return
       }
     }

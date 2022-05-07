@@ -1,7 +1,7 @@
 {
-  "name": "cy-zs-vite",
+  "name": "cy-zs",
   "private": true,
-  "version": "3.7.7",
+  "version": "3.8.3",
   "main": "electron/electron.js",
   "repository": {
     "type": "git",

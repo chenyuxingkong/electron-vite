@@ -101,7 +101,7 @@ const appClose = () => {
   ipcRenderer.send('app-close')
 }
 
-const settingsDialog = ref(false)
+let settingsDialog = ref(false)
 
 let box = null;
 
