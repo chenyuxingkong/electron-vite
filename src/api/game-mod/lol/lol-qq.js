@@ -22,4 +22,18 @@ export function qqHeroPosition() {
     }))
 }
 
+// https://101.qq.com/#/hero-detail?heroid=3&datatype=5v5&tab=rune&lane=mid
+export function crawlRunesApi(heroid, datatype, lane, tab) {
+    if (lane === 'adc') {
+        lane = 'bottom'
+    }
+    let url = `https://101.qq.com/#/hero-detail?heroid=${heroid}&datatype=${datatype}&lane=${lane}&tab=${tab}`
+    console.log(url)
+    return request({
+        url: url,
+        method: 'get',
+    })
+
+}
+
 

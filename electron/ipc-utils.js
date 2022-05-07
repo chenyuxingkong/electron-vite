@@ -1,6 +1,6 @@
 const {ipcMain, app} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
-const path = require('path');
+const {net} = require('electron')
 
 exports.ipcUtils = function (isDev, mainWindow) {
     // 获取版本号
@@ -25,6 +25,22 @@ exports.ipcUtils = function (isDev, mainWindow) {
 
     ipcMain.on('app-path', function (event, args) {
         event.returnValue = app.getPath('appData') + '\\cy-zs\\Data'
+    })
+
+    ipcMain.on('http', function (event, args) {
+        const request = net.request(args)   //输入地址
+        request.on('response', (response) => {
+            console.log(`STATUS: ${response.statusCode}`)
+            console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
+            response.on('data', (chunk) => {
+                console.log(`BODY: ${chunk}`)
+            })
+            response.on('end', () => {
+                console.log('No more data in response.')
+            })
+        })
+        request.end();
+
     })
 }
 
