@@ -3,3 +3,7 @@ https://game.gtimg.cn/images/lol/act/img/js/hero/1.js
 
 ## 获取符文信息
 https://game.gtimg.cn/images/lol/act/img/js/runeList/rune_list.js
+
+## 获取一些数据 符文还有胜率
+## https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${hero_id}.js
+https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_1.js

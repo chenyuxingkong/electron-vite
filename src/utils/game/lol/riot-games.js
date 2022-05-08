@@ -3,7 +3,6 @@ import {ElMessage} from "element-plus";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 import router from "@/router";
 import store from "@/store"
-import {stringIsBlank} from "@/utils/blank-utils.ts";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -195,9 +194,6 @@ function getPortAndPassword() {
 export function callLOLApi(method, route) {
     return new Promise(async resolve => {
         try {
-            if (stringIsBlank(password)) {
-                await getPortAndPassword()
-            }
             // 密码是需要变成 base64 不然无法调用
             const authStr = Buffer.from(username + ':' + password);
             axios({

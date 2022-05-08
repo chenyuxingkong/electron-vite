@@ -84,28 +84,37 @@ const crawlRunes = async (data, url) => {
     }).then(() => {
     })
   } else {
-    console.log(roomType.value)
-    // const htmlData = await crawlRunesApi(data.heroId, roomType.value, position.value, 'rune')
-
     let url = `https://101.qq.com/#/hero-detail?heroid=${data.heroId}&datatype=${roomType.value}&lane=${position.value}&tab=rune`
-    ipcRenderer.sendSync('http', url)
+    let a = ipcRenderer.sendSync('http', url)
+    console.log(a)
+
   }
+
+}
+
+function te() {
+  const pageHeight = document.doc
+
 }
 
 const getRoomType = async () => {
   let data = await callLOLApi('get', '/lol-gameflow/v1/session')
-  // 峡谷
-  if (data.map.gameMode === "CLASSIC") {
-    return "5v5"
-    // 大乱斗
-  } else if (data.map.gameMode === "ARAM") {
-    return "fight"
+  try {
+    // 峡谷
+    if (data.map.gameMode === "CLASSIC") {
+      return "5v5"
+      // 大乱斗
+    } else if (data.map.gameMode === "ARAM") {
+      return "fight"
+    }
+  } catch (e) {
   }
   return "5v5"
 }
 
 onActivated(() => {
   parseHeroData()
+
 })
 
 
