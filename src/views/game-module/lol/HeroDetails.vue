@@ -30,11 +30,13 @@
  * @date 2022-05-06 15:16
  */
 import router from "@/router";
-import {listIsBlank, stringIsBlank} from "@/utils/public/blank-utils.ts";
+import {stringIsBlank} from "@/utils/public/blank-utils.ts";
 import {ElMessageBox} from "element-plus";
 import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
 import {callLOLApi} from "@/utils/game/lol/riot-games";
-import {crawlRunesApi, getRuneList} from "@/api/game-mod/lol/lol-qq";
+import {getRuneList} from "@/api/game-mod/lol/lol-qq";
+import {BizException, ExceptionEnum} from "../../../utils/exception/BizException.ts";
+import {vueReptile} from "../../../utils/public/vue-reptile";
 
 const cheerio = require('cheerio')
 
@@ -51,7 +53,16 @@ const runeList = ref('')
 const heroRune = ref([])
 
 const parseHeroData = async () => {
-  data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥","roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10","magic":"6","difficulty":"5","selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg","banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg","isARAMweekfree":"0","ispermanentweekfree":"0","changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000","camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},"positionStr":"mid，support"}'
+  data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥",' +
+      '"roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10",' +
+      '"magic":"6","difficulty":"5",' +
+      '"selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg",' +
+      '"banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg",' +
+      '"isARAMweekfree":"0","ispermanentweekfree":"0",' +
+      '"changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000",' +
+      '"camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,' +
+      'zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},' +
+      '"positionStr":"mid，support"}'
   // router.currentRoute.value.params.data
   if (stringIsBlank(data.value)) {
     ElMessageBox.alert('请先选择英雄', '提示', {
@@ -73,34 +84,29 @@ const parseHeroData = async () => {
   // await openBrowserPage(opggUrl)
   // 打开 lol 官网页面
   // await openBrowserPage(qqUrl)
-  await crawlRunes(data.value)
+  await crawlRunes(qqUrl, data.value)
 }
 
 // 爬取国服 lol 官网的符文数据
-const crawlRunes = ({heroId}) => {
-  crawlRunesApi(heroId).then((res) => {
-    let data = JSON.parse(res.toString().split('=')[1].split(';')[0])
-    console.log(data)
-    let mainviceperk = JSON.parse(data.list.championLane.mid.mainviceperk)
-    console.log(mainviceperk);
-    let perkdetail = JSON.parse(data.list.championLane.mid.perkdetail)
-    for (let key in perkdetail) {
-      let data = perkdetail[key]
-      for (let item in data) {
-        let temp = {
-          runeList: [],
-          data: data[item]
-        }
-        let perkList = data[item].perk.toString().split("&")
-        perkList.forEach(perkItem => {
-          temp.runeList.push(runeList.value.rune[perkItem])
-        })
-        heroRune.value.push(temp)
-        // console.log(data[item])
-      }
-    }
+const crawlRunes = (url, data) => {
+  if (stringIsBlank(position.value)) {
+    throw new BizException(ExceptionEnum.MESSAGE_ERROR, "没有该英雄的数据");
+  }
+  url += `&tab=rune&lane=${position.value}`
+  let html = vueReptile(url, 'rune-container')
+  // console.log(html)
+  const $ = cheerio.load(html)
+  let runeData = []
+
+
+  $('.rune-container').find('.rune-item').each((i, elem) => {
+    $(elem).children('div').each((i1, el) => {
+      console.log($(el).find('p').text());
+    })
+    console.log($(elem).children('div'))
   })
-  console.log(heroRune.value)
+
+
 }
 
 const getRoomType = async () => {
@@ -120,7 +126,7 @@ const getRoomType = async () => {
 
 onActivated(async () => {
   runeList.value = await getRuneList()
-  console.log(runeList.value.rune)
+  // console.log(runeList.value.rune)
   await parseHeroData()
 
 })

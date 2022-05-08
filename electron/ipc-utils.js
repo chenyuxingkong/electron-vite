@@ -1,6 +1,5 @@
 const {ipcMain, app, BrowserWindow} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
-const cheerio = require('cheerio')
 
 exports.ipcUtils = function (isDev, mainWindow) {
     // 获取版本号
@@ -27,36 +26,33 @@ exports.ipcUtils = function (isDev, mainWindow) {
         event.returnValue = app.getPath('appData') + '\\cy-zs\\Data'
     })
 
-    ipcMain.on('http', function (event, args) {
-        console.log(args.elemName)
+    /**
+     * 解决 vue 发开的网站页面爬取
+     */
+    ipcMain.on('vue-reptile', function (event, args) {
+        // 计数 10 次就不在爬取了
         let a = 0;
-        var win = new BrowserWindow({width: 800, height: 600, show: true});
+        const win = new BrowserWindow({width: 800, height: 600, show: false});
         win.loadURL(args.url);
-        // setTimeout(() => {
-        //     console.log(document.body.innerHTML)
-        //     document.body.innerHTML
-        // }, 2000)
         win.webContents.on('dom-ready', function () {
             let interval = setInterval(() => {
                 win.webContents.executeJavaScript(`
-                console.log('触发')
-                console.log(document.body)
                 document.body.innerHTML
             `).then((result) => {
-                    const $ = cheerio.load(result)
-                    console.log($(args.elemName));
-                    if (a === 3) {
+                    // 判断是否出现指定元素
+                    if (result.indexOf(args.elemName) > -1) {
+                        event.returnValue = result
                         clearInterval(interval)
+                        win.close()
+                    } else if (a === 10) {
+                        event.returnValue = ""
+                        clearInterval(interval)
+                        win.close()
                     }
                     a++
                 })
-            }, 2000)
+            }, 500)
         })
-        win.webContents.toggleDevTools()
+        // win.webContents.toggleDevTools()
     })
-}
-
-
-function test(win) {
-
 }
