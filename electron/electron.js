@@ -23,7 +23,7 @@ function createWindow() {
             contextIsolation: false,
             allowRunningInsecureContent: true, // 如果想要 axios 可以跨域就开启 这个和下面的，这两个会有警告
             webSecurity: false,
-            // webviewTag: true, // 启用 <webview> tag 标签
+            webviewTag: true, // 启用 <webview> tag 标签
         },
         title: 'CY-助手工具',
         show: true,

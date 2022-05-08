@@ -1,4 +1,4 @@
-const {ipcMain, app} = require('electron');
+const {ipcMain, app, BrowserWindow} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
 const {net} = require('electron')
 
@@ -28,19 +28,24 @@ exports.ipcUtils = function (isDev, mainWindow) {
     })
 
     ipcMain.on('http', function (event, args) {
-        const request = net.request(args)   //输入地址
-        request.on('response', (response) => {
-            console.log(`STATUS: ${response.statusCode}`)
-            console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
-            response.on('data', (chunk) => {
-                console.log(`BODY: ${chunk}`)
-            })
-            response.on('end', () => {
-                console.log('No more data in response.')
-            })
-        })
-        request.end();
+        var win = new BrowserWindow({width: 800, height: 600, show: true});
 
+        win.loadURL(args);
+        // setTimeout(() => {
+        //     console.log(document.body.innerHTML)
+        //     document.body.innerHTML
+        // }, 2000)
+
+        win.webContents.executeJavaScript(`
+            window.onload = function (){
+            console.log('渲染完成没有')
+            }
+        
+            `).then((result) => {
+            console.log(result)
+            event.returnValue = result
+        })
+        win.webContents.toggleDevTools()
     })
 }
 
