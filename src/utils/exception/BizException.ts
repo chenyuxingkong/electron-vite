@@ -1,5 +1,5 @@
 import {ElMessage, ElMessageBox} from "element-plus";
-import {stringIsBlank} from "../blank-utils";
+import {stringIsBlank} from "../public/blank-utils";
 
 export const ExceptionEnum = {
     SUCCESS: {code: 200, name: '成功', turnOnHtml: false},

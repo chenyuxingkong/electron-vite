@@ -27,9 +27,15 @@ window.onresize = () => {
 </template>
 
 <style>
-* {
-  padding: 0;
+body {
   margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 </style>
 <style lang="scss" scoped>

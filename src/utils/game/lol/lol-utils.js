@@ -1,8 +1,8 @@
 // positionWinRate 胜率 positionPickRate 登场率 positionTier 层级
 // positions 位置
 
-import {getExtension} from "@/utils/file-utils";
-import {stringIsBlank} from "@/utils/blank-utils.ts";
+import {getExtension} from "@/utils/public/file-utils";
+import {stringIsBlank} from "@/utils/public/blank-utils.ts";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 
 const fs = require('fs')

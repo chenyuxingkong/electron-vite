@@ -6,13 +6,15 @@
       </el-icon>
       <RiotConfig v-if="riotConfigDialog" @close="riotConfigDialog = false"/>
     </div>
-    <router-view v-slot='{ Component }'>
-      <transition mode='out-in' name='scale'>
-        <keep-alive>
-          <component :is='Component'/>
-        </keep-alive>
-      </transition>
-    </router-view>
+    <el-main>
+      <router-view v-slot='{ Component }'>
+        <transition mode='out-in' name='scale'>
+          <keep-alive>
+            <component :is='Component'/>
+          </keep-alive>
+        </transition>
+      </router-view>
+    </el-main>
   </el-container>
 </template>
 

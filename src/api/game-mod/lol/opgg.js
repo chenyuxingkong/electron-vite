@@ -1,4 +1,4 @@
-import request from "../../../utils/request";
+import request from "../../../utils/public/request";
 
 
 export function getOpggHtml(position) {

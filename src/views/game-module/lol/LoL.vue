@@ -34,7 +34,7 @@ import AsideOpggData from '@/components/game/lol/AsideOpggData';
 import {Search} from "@element-plus/icons";
 import {heroPosition} from '@/data/game'
 import {getHeroData, qqHeroPosition} from '@/api/game-mod/lol/lol-qq';
-import {stringIsNotBlank} from '@/utils/blank-utils.ts';
+import {stringIsNotBlank} from '@/utils/public/blank-utils.ts';
 import {getSkinName, openSkin} from '@/utils/game/lol/lol-utils';
 import {ElMessageBox} from "element-plus";
 import {setCallback} from "@/utils/game/lol/riot-games";

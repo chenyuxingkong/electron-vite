@@ -1,6 +1,6 @@
 const {ipcMain, app, BrowserWindow} = require('electron');
 const {autoUpdate} = require("./electron-auto-updater");
-const {net} = require('electron')
+const cheerio = require('cheerio')
 
 exports.ipcUtils = function (isDev, mainWindow) {
     // 获取版本号
@@ -28,24 +28,35 @@ exports.ipcUtils = function (isDev, mainWindow) {
     })
 
     ipcMain.on('http', function (event, args) {
+        console.log(args.elemName)
+        let a = 0;
         var win = new BrowserWindow({width: 800, height: 600, show: true});
-
-        win.loadURL(args);
+        win.loadURL(args.url);
         // setTimeout(() => {
         //     console.log(document.body.innerHTML)
         //     document.body.innerHTML
         // }, 2000)
-
-        win.webContents.executeJavaScript(`
-            window.onload = function (){
-            console.log('渲染完成没有')
-            }
-        
+        win.webContents.on('dom-ready', function () {
+            let interval = setInterval(() => {
+                win.webContents.executeJavaScript(`
+                console.log('触发')
+                console.log(document.body)
+                document.body.innerHTML
             `).then((result) => {
-            console.log(result)
-            event.returnValue = result
+                    const $ = cheerio.load(result)
+                    console.log($(args.elemName));
+                    if (a === 3) {
+                        clearInterval(interval)
+                    }
+                    a++
+                })
+            }, 2000)
         })
         win.webContents.toggleDevTools()
     })
 }
 
+
+function test(win) {
+
+}

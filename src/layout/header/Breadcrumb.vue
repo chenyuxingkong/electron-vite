@@ -54,9 +54,9 @@
 <script name="Breadcrumb" setup>
 import router from "../../router";
 import {ArrowLeftBold, ArrowRightBold, CloseBold, Operation, RefreshLeft, SemiSelect} from "@element-plus/icons"
-import logger from "@/utils/logger";
+import logger from "@/utils/public/logger";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {convertSize} from '@/utils/b-to-mb'
+import {convertSize} from '@/utils/public/b-to-mb'
 import Settings from "@/components/system/Settings";
 
 const {ipcRenderer} = require('electron')

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/public/request'
 
 /**
  * <p>
@@ -23,17 +23,19 @@ export function qqHeroPosition() {
 }
 
 // https://101.qq.com/#/hero-detail?heroid=3&datatype=5v5&tab=rune&lane=mid
-export function crawlRunesApi(heroid, datatype, lane, tab) {
-    if (lane === 'adc') {
-        lane = 'bottom'
-    }
-    let url = `https://101.qq.com/#/hero-detail?heroid=${heroid}&datatype=${datatype}&lane=${lane}&tab=${tab}`
-    console.log(url)
+export function crawlRunesApi(heroid) {
+    let url = `https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${heroid}.js?ts=${Date.now() / 600000 >> 0}`
     return request({
         url: url,
         method: 'get',
     })
+}
 
+export function getRuneList() {
+    return request({
+        url: 'https://game.gtimg.cn/images/lol/act/img/js/runeList/rune_list.js',
+        method: 'get',
+    })
 }
 
 

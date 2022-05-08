@@ -1,5 +1,5 @@
 import {getOpggHtml} from "../../../api/game-mod/lol/opgg";
-import {getFileName} from "../../file-utils";
+import {getFileName} from "../../public/file-utils";
 
 const cheerio = require('cheerio');
 

@@ -16,7 +16,7 @@ const router = [
                 path: 'riot',
                 meta: {title: '英雄联盟', onRoutes: '/youxi/index'},
                 redirect: '/youxi/riot/lol',
-                component: createNameComponent(() => import('@/views/game-module/lol/index.vue')),
+                component: createNameComponent(() => import('@/views/game-module/lol')),
                 children: [
                     {
                         path: 'lol',
