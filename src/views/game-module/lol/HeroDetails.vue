@@ -10,13 +10,7 @@
       </el-radio-group>
     </el-header>
     <el-main>
-      <el-row v-for="item in heroRune">
-        <template v-for="rune in item.runeList">
-          <el-col :span="2">
-            <img :alt="rune.name" :src="rune.icon" style="width: 31px;height: 31px">
-          </el-col>
-        </template>
-      </el-row>
+      <webview :src="qqUrl" style="  height:630px"></webview>
     </el-main>
   </el-container>
 </template>
@@ -49,28 +43,30 @@ const position = ref('')
 const roomType = ref('')
 const runeList = ref('')
 
+const qqUrl = ref('')
+
 
 const heroRune = ref([])
 
 const parseHeroData = async () => {
-  data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥",' +
-      '"roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10",' +
-      '"magic":"6","difficulty":"5",' +
-      '"selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg",' +
-      '"banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg",' +
-      '"isARAMweekfree":"0","ispermanentweekfree":"0",' +
-      '"changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000",' +
-      '"camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,' +
-      'zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},' +
-      '"positionStr":"mid，support"}'
-  // router.currentRoute.value.params.data
+  data.value = router.currentRoute.value.params.data
+  // data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥",' +
+  //     '"roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10",' +
+  //     '"magic":"6","difficulty":"5",' +
+  //     '"selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg",' +
+  //     '"banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg",' +
+  //     '"isARAMweekfree":"0","ispermanentweekfree":"0",' +
+  //     '"changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000",' +
+  //     '"camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,' +
+  //     'zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},' +
+  //     '"positionStr":"mid，support"}'
   if (stringIsBlank(data.value)) {
     ElMessageBox.alert('请先选择英雄', '提示', {
       type: 'error'
     }).then(() => {
-      router.push('/lol')
+      router.push('/riot/lol')
     }).catch(() => {
-      router.push('/lol')
+      router.push('/riot/lol')
     })
   }
   // 获取当前房间的类型是大乱斗还是峡谷
@@ -79,12 +75,12 @@ const parseHeroData = async () => {
   positionList.value = data.value.positionStr.split('，')
   position.value = positionList.value[0]
   let opggUrl = `${OPGG_URL_PREFIX}/${data.value.alias}`
-  let qqUrl = `${LOL_CN_PREFIX}heroid=${data.value.heroId}&datatype=${roomType.value}`
+    qqUrl.value = `${LOL_CN_PREFIX}heroid=${data.value.heroId}&datatype=${roomType.value}`
   // 打开opgg的页面
   // await openBrowserPage(opggUrl)
   // 打开 lol 官网页面
   // await openBrowserPage(qqUrl)
-  await crawlRunes(qqUrl, data.value)
+  // await crawlRunes(qqUrl.value, data.value)
 }
 
 // 爬取国服 lol 官网的符文数据
@@ -101,9 +97,9 @@ const crawlRunes = (url, data) => {
 
   $('.rune-container').find('.rune-item').each((i, elem) => {
     $(elem).children('div').each((i1, el) => {
-      console.log($(el).find('p').text());
+      console.log($(el).find('div div').text());
     })
-    console.log($(elem).children('div'))
+    console.log($(elem).children('div div'))
   })
 
 

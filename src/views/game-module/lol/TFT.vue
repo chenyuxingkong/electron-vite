@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    这里是云顶
+    <el-main>
+      <webview src="https://lol.qq.com/tft/#/index" style="height:630px"></webview>
+    </el-main>
   </el-container>
 </template>
 
