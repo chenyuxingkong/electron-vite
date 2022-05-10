@@ -8,6 +8,7 @@
           </el-radio-button>
         </template>
       </el-radio-group>
+      <el-button @click="text">测试</el-button>
     </el-header>
     <el-main>
       <webview :src="qqUrl" style="  height:630px"></webview>
@@ -31,6 +32,7 @@ import {callLOLApi} from "@/utils/game/lol/riot-games";
 import {getRuneList} from "@/api/game-mod/lol/lol-qq";
 import {BizException, ExceptionEnum} from "../../../utils/exception/BizException.ts";
 import {vueReptile} from "../../../utils/public/vue-reptile";
+import {setCallback} from "../../../utils/game/lol/riot-games";
 
 const cheerio = require('cheerio')
 
@@ -50,16 +52,16 @@ const heroRune = ref([])
 
 const parseHeroData = async () => {
   data.value = router.currentRoute.value.params.data
-  // data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥",' +
-  //     '"roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10",' +
-  //     '"magic":"6","difficulty":"5",' +
-  //     '"selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg",' +
-  //     '"banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg",' +
-  //     '"isARAMweekfree":"0","ispermanentweekfree":"0",' +
-  //     '"changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000",' +
-  //     '"camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,' +
-  //     'zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},' +
-  //     '"positionStr":"mid，support"}'
+  data.value = '{"heroId":"3","name":"正义巨像","alias":"Galio","title":"加里奥",' +
+      '"roles":["tank","mage"],"isWeekFree":"0","attack":"1","defense":"10",' +
+      '"magic":"6","difficulty":"5",' +
+      '"selectAudio":"https://game.gtimg.cn/images/lol/act/img/vo/choose/3.ogg",' +
+      '"banAudio":"https://game.gtimg.cn/images/lol/act/img/vo/ban/3.ogg",' +
+      '"isARAMweekfree":"0","ispermanentweekfree":"0",' +
+      '"changeLabel":"无改动","goldPrice":"3150","couponPrice":"2000",' +
+      '"camp":"","campId":"","keywords":"正义巨像,加里奥,Galio,jla,zyjx,' +
+      'zhengyijuxiang,jialiao","position":{"mid":"252","support":"78"},' +
+      '"positionStr":"mid，support"}'
   if (stringIsBlank(data.value)) {
     ElMessageBox.alert('请先选择英雄', '提示', {
       type: 'error'
@@ -75,7 +77,7 @@ const parseHeroData = async () => {
   positionList.value = data.value.positionStr.split('，')
   position.value = positionList.value[0]
   let opggUrl = `${OPGG_URL_PREFIX}/${data.value.alias}`
-    qqUrl.value = `${LOL_CN_PREFIX}heroid=${data.value.heroId}&datatype=${roomType.value}`
+  qqUrl.value = `${LOL_CN_PREFIX}heroid=${data.value.heroId}&datatype=${roomType.value}`
   // 打开opgg的页面
   // await openBrowserPage(opggUrl)
   // 打开 lol 官网页面
@@ -120,11 +122,75 @@ const getRoomType = async () => {
   return "5v5"
 }
 
+const text = () => {
+  const te = {
+    "autoModifiedSelections": [],
+    "current": true,
+    "id": 2069068589,
+    "isActive": false,
+    "isDeletable": true,
+    "isEditable": true,
+    "isValid": true,
+    "lastModified": 1652184012396,
+    "name": "测试",
+    "order": 0,
+    "primaryStyleId": 8100,
+    "selectedPerkIds": [
+      8112,
+      8126,
+      8136,
+      8135,
+      9101,
+      9104,
+      5008,
+      5008,
+      5001
+    ],
+    "subStyleId": 8000
+  }
+
+  const a = {
+    "autoModifiedSelections": [],
+    "current": true,
+    "id": 2069068589,
+    "isActive": false,
+    "isDeletable": true,
+    "isEditable": true,
+    "isValid": true,
+    "lastModified": 1652184012396,
+    "name": "测试",
+    "order": 0,
+    "primaryStyleId": 8100,
+    "selectedPerkIds": [
+      8112,
+      8126,
+      8136,
+      8135,
+      9101,
+      9104,
+      5008,
+      5008,
+      5001
+    ],
+    "subStyleId": 8000
+  }
+
+  callLOLApi('put', '/lol-perks/v1/pages/2069068589', te).then(res => {
+    console.log(res)
+  })
+
+  callLOLApi('put', '/lol-perks/v1/currentpage', te).then(res => {
+    console.log(res)
+  })
+}
+
 onActivated(async () => {
   runeList.value = await getRuneList()
   // console.log(runeList.value.rune)
   await parseHeroData()
-
+  setCallback('message', function (data) {
+    console.log(data)
+  })
 })
 
 

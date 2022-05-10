@@ -189,9 +189,10 @@ function getPortAndPassword() {
  * 调用 lol 的 api
  * @param method 请求方法
  * @param route 路由
+ * @param data 参数
  * @returns {Promise<unknown>}
  */
-export function callLOLApi(method, route) {
+export function callLOLApi(method, route, data) {
     return new Promise(async resolve => {
         try {
             // 密码是需要变成 base64 不然无法调用
@@ -200,6 +201,7 @@ export function callLOLApi(method, route) {
                 method: method,
                 url: protocol + '://127.0.0.1:' + port + route,
                 headers: {'Authorization': 'Basic ' + authStr.toString('base64')},
+                data: data
             }).then(res => {
                 resolve(res.data);
             }).catch(err => {
