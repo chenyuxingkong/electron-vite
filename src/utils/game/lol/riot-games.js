@@ -205,8 +205,7 @@ export function callLOLApi(method, route, data) {
             }).then(res => {
                 resolve(res.data);
             }).catch(err => {
-                const result = err.response;
-                resolve(result);
+                resolve(err);
             })
         } catch (err) {
             resolve(false);

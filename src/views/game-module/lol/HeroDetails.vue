@@ -103,8 +103,6 @@ const crawlRunes = (url, data) => {
     })
     console.log($(elem).children('div div'))
   })
-
-
 }
 
 const getRoomType = async () => {
@@ -122,7 +120,11 @@ const getRoomType = async () => {
   return "5v5"
 }
 
-const text = () => {
+/**
+ * 每个人的符文页是有上限的 所以需要删了重新插入
+ * @returns {Promise<void>}
+ */
+const text = async () => {
   const te = {
     "autoModifiedSelections": [],
     "current": true,
@@ -131,57 +133,36 @@ const text = () => {
     "isDeletable": true,
     "isEditable": true,
     "isValid": true,
-    "lastModified": 1652184012396,
-    "name": "测试",
+    "lastModified": Date.now(),
+    "name": "测试4",
     "order": 0,
-    "primaryStyleId": 8100,
+    "primaryStyleId": 8000,
     "selectedPerkIds": [
-      8112,
-      8126,
-      8136,
-      8135,
+      8005,
       9101,
       9104,
+      8014,
+      8126,
+      8136,
       5008,
       5008,
       5001
     ],
-    "subStyleId": 8000
+    "subStyleId": 8100
   }
 
-  const a = {
-    "autoModifiedSelections": [],
-    "current": true,
-    "id": 2069068589,
-    "isActive": false,
-    "isDeletable": true,
-    "isEditable": true,
-    "isValid": true,
-    "lastModified": 1652184012396,
-    "name": "测试",
-    "order": 0,
-    "primaryStyleId": 8100,
-    "selectedPerkIds": [
-      8112,
-      8126,
-      8136,
-      8135,
-      9101,
-      9104,
-      5008,
-      5008,
-      5001
-    ],
-    "subStyleId": 8000
+  const list = await callLOLApi('get', '/lol-perks/v1/pages')
+  const current = list.find((i) => i.current && i.isDeletable);
+  if (typeof current === 'undefined') {
+    return
   }
+  if (current.id) {
+    console.log(await callLOLApi('delete', `/lol-perks/v1/pages/${current.id}`));
+  }
+  let gaibian = await callLOLApi('post', `/lol-perks/v1/pages`, te)
+  console.log(await callLOLApi('get', '/lol-perks/v1/pages'));
+  console.log(gaibian)
 
-  callLOLApi('put', '/lol-perks/v1/pages/2069068589', te).then(res => {
-    console.log(res)
-  })
-
-  callLOLApi('put', '/lol-perks/v1/currentpage', te).then(res => {
-    console.log(res)
-  })
 }
 
 onActivated(async () => {
@@ -189,7 +170,7 @@ onActivated(async () => {
   // console.log(runeList.value.rune)
   await parseHeroData()
   setCallback('message', function (data) {
-    console.log(data)
+    // console.log(data)
   })
 })
 
