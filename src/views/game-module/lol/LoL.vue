@@ -124,11 +124,21 @@ const nationalServiceData = () => {
             store.commit('app/pushHeroData', item)
           }
         })
-        checkVersion()
+        // checkVersion()
       })
     }
   })
 }
+
+const configureRunes = () => {
+  // 结束游戏后询问是否要配置当前符文
+  setCallback('/lol-gameflow/v1/gameflow-phase', function (data) {
+    if (data.data === "EndOfGame") {
+      console.log(store.state.app.lol.currentHero)
+    }
+  })
+}
+
 
 const openSkinsAccordingToHeroes = () => {
   // 监听 /lol-loadouts/v4/loadouts/scope/champion/
@@ -138,9 +148,13 @@ const openSkinsAccordingToHeroes = () => {
     let index = data.uri.split("/")
     let championId = index[index.length - 1]
     let heroData = store.state.app.lol.heroData
+    let currentHero = heroData.find((i) => i.heroId.toString() === championId.toString())
+    console.log(currentHero)
     for (let i = 0; i < heroData.length; i++) {
       // 循环根据 英雄id来获取英雄名
       if (heroData[i].heroId.toString() === championId.toString()) {
+        console.log(heroData[i])
+        store.commit('app/setCurrentHero', heroData[i])
         // 通过英雄名字来开启
         if (store.state.config.riotConfig.autoSkin) {
           openSkin(heroData[i].alias)
@@ -161,6 +175,7 @@ onMounted(() => {
 })
 
 onActivated(() => {
+  configureRunes()
   openSkinsAccordingToHeroes()
 })
 

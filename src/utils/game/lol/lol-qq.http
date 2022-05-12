@@ -1,3 +1,4 @@
+###
 ## 这个是获取英雄信息的 hero/${英雄id}.js
 https://game.gtimg.cn/images/lol/act/img/js/hero/1.js
 
@@ -7,3 +8,6 @@ https://game.gtimg.cn/images/lol/act/img/js/runeList/rune_list.js
 ## 获取一些数据 符文还有胜率
 ## https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${hero_id}.js
 https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_1.js
+
+## 获取物品信息
+https://ossweb-img.qq.com/images/lol/act/img/js/items/items.js

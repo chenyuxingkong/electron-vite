@@ -1,17 +1,7 @@
 <template>
   <el-container>
-    <el-header>
-      <el-radio-group v-model="position">
-        <template v-for="item in positionList">
-          <el-radio-button :label="item">
-            {{ heroPositionChinese(item) }}
-          </el-radio-button>
-        </template>
-      </el-radio-group>
-      <el-button @click="text">测试</el-button>
-    </el-header>
     <el-main>
-      <webview :src="qqUrl" style="  height:630px"></webview>
+      <webview :src="qqUrl" style="height:675px"></webview>
     </el-main>
   </el-container>
 </template>
@@ -27,12 +17,10 @@
 import router from "@/router";
 import {stringIsBlank} from "@/utils/public/blank-utils.ts";
 import {ElMessageBox} from "element-plus";
-import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
 import {callLOLApi} from "@/utils/game/lol/riot-games";
 import {getRuneList} from "@/api/game-mod/lol/lol-qq";
 import {BizException, ExceptionEnum} from "../../../utils/exception/BizException.ts";
 import {vueReptile} from "../../../utils/public/vue-reptile";
-import {setCallback} from "../../../utils/game/lol/riot-games";
 
 const cheerio = require('cheerio')
 
@@ -150,7 +138,6 @@ const text = async () => {
     ],
     "subStyleId": 8100
   }
-
   const list = await callLOLApi('get', '/lol-perks/v1/pages')
   const current = list.find((i) => i.current && i.isDeletable);
   if (typeof current === 'undefined') {
@@ -159,9 +146,9 @@ const text = async () => {
   if (current.id) {
     console.log(await callLOLApi('delete', `/lol-perks/v1/pages/${current.id}`));
   }
-  let gaibian = await callLOLApi('post', `/lol-perks/v1/pages`, te)
+  // 添加符文
+  await callLOLApi('post', `/lol-perks/v1/pages`, te)
   console.log(await callLOLApi('get', '/lol-perks/v1/pages'));
-  console.log(gaibian)
 
 }
 
@@ -169,9 +156,6 @@ onActivated(async () => {
   runeList.value = await getRuneList()
   // console.log(runeList.value.rune)
   await parseHeroData()
-  setCallback('message', function (data) {
-    // console.log(data)
-  })
 })
 
 

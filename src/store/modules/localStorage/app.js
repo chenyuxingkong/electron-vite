@@ -13,6 +13,7 @@ const state = () => ({
     },
     lol: {
         heroData: [],
+        currentHero: {}
     },
 })
 
@@ -23,6 +24,10 @@ const mutations = {
     pushHeroData(state, val) {
         state.lol.heroData.push(val)
     },
+    setCurrentHero(state, val) {
+        console.log(val)
+        state.lol.currentHero = val
+    }
 }
 
 export default {

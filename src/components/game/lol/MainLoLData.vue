@@ -1,8 +1,18 @@
 <template>
+  <div v-if="rightClick.show"
+       class="maskBox" @click="rightClick.show = false"
+       @contextmenu.prevent="rightClick.show = false">
+    <div :style="{top:rightClick.winY + 'px',left: rightClick.winX+'px'}" class="open_the_web_page">
+      <div class="box">
+        <span @click="checked(1)">打开 QQ</span>
+        <span @click="checked(2)">打开 OPGG</span>
+      </div>
+    </div>
+  </div>
   <el-main style="margin-top: 10px">
     <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
-        <li @click="seeDetails(item)">
+        <li @click="seeDetails(item)" @contextmenu.prevent="seeDetails(item,$event)">
           <div class="hero_img">
             <div class="hero_position">
               <span>
@@ -27,8 +37,6 @@
 <script name="MainLoLData" setup>
 import store from "@/store";
 import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
-import HeroDetails from "@/views/game-module/lol/HeroDetails";
-import router from "@/router";
 
 /**
  * <p>
@@ -43,6 +51,13 @@ const props = defineProps({
   }
 })
 
+const rightClick = ref({
+  show: false,
+  winX: 0,
+  winY: 0,
+  data: {}
+})
+
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
@@ -52,15 +67,17 @@ const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
 
-const seeDetails = (val) => {
-  router.push({
-    name: 'heroDetails',
-    params: {
-      data: JSON.stringify(val)
-    }
-  })
+
+const seeDetails = (val, event) => {
+  rightClick.value.winX = event.clientX
+  rightClick.value.winY = event.clientY
+  rightClick.value.show = true
+  rightClick.value.data = val
 }
 
+const checked = (val) => {
+  console.log(val, rightClick.value.data)
+}
 
 // 想要父组件调用需要暴露出去
 defineExpose({
@@ -70,6 +87,48 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.maskBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 88888;
+  font-size: 0.8rem;
+
+  .open_the_web_page {
+    display: flex;
+    flex-direction: column-reverse;
+    top: 20px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 99999;
+    position: fixed;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%), 0 0 6px rgb(0 0 0 / 4%);
+    background: #fff;
+    border-radius: 4px;
+    padding: 8px 0;
+    user-select: none;
+    box-sizing: border-box;
+
+    .box {
+      display: flex;
+      flex-direction: column-reverse;
+
+      span {
+        padding: 2px;
+      }
+
+      span:hover {
+        background: #ecf5ff;
+        color: #409eff;
+      }
+    }
+
+  }
+}
+
+
 .hero_list {
   float: left;
   padding: 0;

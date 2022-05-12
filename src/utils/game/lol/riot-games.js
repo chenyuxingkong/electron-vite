@@ -89,8 +89,6 @@ export async function lolWebSocket() {
         callLOLApi('get', '/lol-gameflow/v1/session').then((data) => {
             currentRoom(data)
         })
-
-
     }
 
     // 获取发送的消息

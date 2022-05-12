@@ -29,6 +29,8 @@
 import {closeLoLWebSocket, currentRoom, openLoLConnection, setCallback} from "@/utils/game/lol/riot-games";
 import {initRoitConfig} from "../../../store/modules/local-store/riot-config";
 import RiotConfig from "../../../components/game/lol/RiotConfig";
+import store from '@/store'
+import router from "../../../router";
 
 const riotConfigDialog = ref(false)
 
@@ -43,6 +45,13 @@ onMounted(() => {
   setCallback('/lol-gameflow/v1/session', function (data) {
     currentRoom(data.data)
   })
+
+  setCallback('message', function (data) {
+    // console.log(data)
+  })
+
+
+
 })
 
 onActivated(() => {
@@ -51,6 +60,7 @@ onActivated(() => {
 })
 
 onDeactivated(() => {
+  // 关闭和lol的连接
   closeLoLWebSocket()
 })
 
