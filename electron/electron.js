@@ -75,6 +75,14 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 })
+app.commandLine.appendSwitch('no-sandbox');
+app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch('disable-software-rasterizer');
+app.commandLine.appendSwitch('disable-gpu-compositing');
+app.commandLine.appendSwitch('disable-gpu-rasterization');
+app.commandLine.appendSwitch('disable-gpu-sandbox');
+app.commandLine.appendSwitch('--no-sandbox');
+app.disableHardwareAcceleration();
 
 //忽略证书的检测
 app.commandLine.appendSwitch('--ignore-certificate-errors', 'true')

@@ -31,7 +31,7 @@
     <div class="system_icon">
       <div>
         <el-dropdown class="no_drag" @command="receiptsOpts">
-          <el-button :icon="Operation" class="no_drag" type="text"></el-button>
+          <el-button :icon="Operation" class="no_drag" text></el-button>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="checkForUpdates">检查更新</el-dropdown-item>
@@ -41,10 +41,10 @@
         </el-dropdown>
       </div>
       <div>
-        <el-button :icon="SemiSelect" class="no_drag" title="最小化" type="text" @click="miniWindow"></el-button>
+        <el-button :icon="SemiSelect" class="no_drag" text title="最小化" @click="miniWindow"></el-button>
       </div>
       <div>
-        <el-button :icon="CloseBold" class="no_drag" title="关闭" type="text" @click="appClose"></el-button>
+        <el-button :icon="CloseBold" class="no_drag" text title="关闭" @click="appClose"></el-button>
       </div>
     </div>
   </div>

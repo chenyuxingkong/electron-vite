@@ -7,6 +7,7 @@ import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 import {resolve} from "path";
 
+
 const pathResolve = (dir) => {
     return resolve(__dirname, '.', dir)
 }
@@ -25,7 +26,9 @@ export default defineConfig({
     plugins: [
         VueSetupExtend(),
         // 开启vue
-        vue(),
+        vue({
+            refTransform: true
+        }),
         // 按需加载
         AutoImport({
             resolvers: [ElementPlusResolver()],

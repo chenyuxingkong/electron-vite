@@ -1,18 +1,11 @@
 <template>
-  <div v-if="rightClick.show"
-       class="maskBox" @click="rightClick.show = false"
-       @contextmenu.prevent="rightClick.show = false">
-    <div :style="{top:rightClick.winY + 'px',left: rightClick.winX+'px'}" class="open_the_web_page">
-      <div class="box">
-        <span @click="checked(1)">打开 QQ</span>
-        <span @click="checked(2)">打开 OPGG</span>
-      </div>
-    </div>
-  </div>
+  <RightMenu v-model="rightClick" :height="90" :menu="menu" :title="rightClick.data.name" :width="90"
+             @itemClick="checked"/>
+  <hero-rune-config v-if="runeDiaLog" :data="runeList" @close="runeDiaLog = false"/>
   <el-main style="margin-top: 10px">
     <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
-        <li @click="seeDetails(item)" @contextmenu.prevent="seeDetails(item,$event)">
+        <li @contextmenu.prevent="seeDetails(item,$event)">
           <div class="hero_img">
             <div class="hero_position">
               <span>
@@ -37,6 +30,10 @@
 <script name="MainLoLData" setup>
 import store from "@/store";
 import {heroPositionChinese} from "@/utils/game/lol/lol-utils";
+import RightMenu from "@/components/public/RightMenu.vue";
+import {openBrowserPage} from "@/utils/public/electron-utils";
+import HeroRuneConfig from "@/components/game/lol/HeroRuneConfig.vue";
+import {getRuneList} from "@/api/game-mod/lol/lol-qq";
 
 /**
  * <p>
@@ -51,22 +48,30 @@ const props = defineProps({
   }
 })
 
+const menu = [
+  {name: '打开QQ'},
+  {name: '打开OPGG'},
+  {name: '打开符文'},
+]
+
 const rightClick = ref({
   show: false,
   winX: 0,
   winY: 0,
-  data: {}
+  data: {},
 })
+const runeDiaLog = ref(false)
 
 const windowSize = computed(() => {
   return store.state.app.windowSize
 })
 
+const runeList = ref([])
+
 
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
 }
-
 
 const seeDetails = (val, event) => {
   rightClick.value.winX = event.clientX
@@ -75,9 +80,25 @@ const seeDetails = (val, event) => {
   rightClick.value.data = val
 }
 
-const checked = (val) => {
-  console.log(val, rightClick.value.data)
+const checked = async (item, data) => {
+  switch (item) {
+    case 0:
+      await openBrowserPage(`https://101.qq.com/#/hero-detail?heroid=${data.heroId}`)
+      break;
+    case 1:
+      await openBrowserPage(`https://www.op.gg/champions/${data.alias}`)
+      break
+    case 2:
+      runeDiaLog.value = true
+      break;
+  }
 }
+
+onMounted(async () => {
+  runeList.value = await getRuneList()
+  // console.log(runeList.value.rune)
+})
+
 
 // 想要父组件调用需要暴露出去
 defineExpose({
@@ -124,7 +145,6 @@ defineExpose({
         color: #409eff;
       }
     }
-
   }
 }
 

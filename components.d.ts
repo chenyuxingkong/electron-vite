@@ -34,6 +34,7 @@ declare module 'vue' {
     HeroRuneConfig: typeof import('./src/components/game/lol/HeroRuneConfig.vue')['default']
     Loading: typeof import('element-plus/es')['ElLoadingDirective']
     MainLoLData: typeof import('./src/components/game/lol/MainLoLData.vue')['default']
+    RightMenu: typeof import('./src/components/public/RightMenu.vue')['default']
     RiotConfig: typeof import('./src/components/game/lol/RiotConfig.vue')['default']
     Settings: typeof import('./src/components/system/Settings.vue')['default']
   }

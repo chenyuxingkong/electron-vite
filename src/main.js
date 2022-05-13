@@ -10,9 +10,9 @@ import '../src/icons/iconfont.css'
 import * as Icons from '@element-plus/icons'
 
 const app = createApp(App)
+app.use(ElementPlus, {locale: zhCn, size: 'small'})
 app.use(store)
 app.use(router)
-app.use(ElementPlus, {locale: zhCn, size: 'small'})
 app.mount('#app')
 
 
