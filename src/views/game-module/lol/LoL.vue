@@ -38,6 +38,7 @@ import {stringIsNotBlank} from '@/utils/public/blank-utils.ts';
 import {getSkinName, openSkin} from '@/utils/game/lol/lol-utils';
 import {ElMessageBox} from "element-plus";
 import {setCallback} from "@/utils/game/lol/riot-games";
+import {setRune} from "../../../utils/game/lol/riot-games";
 
 
 const {shell} = require('electron');
@@ -52,7 +53,6 @@ const version = ref('')
 const sameVersion = ref(false)
 //
 const mainLoLData = ref(null)
-
 
 // 查询英雄
 const selectHeroData = computed(() => {
@@ -149,26 +149,18 @@ const openSkinsAccordingToHeroes = () => {
     let championId = index[index.length - 1]
     let heroData = store.state.app.lol.heroData
     let currentHero = heroData.find((i) => i.heroId.toString() === championId.toString())
-    console.log(currentHero)
-    for (let i = 0; i < heroData.length; i++) {
-      // 循环根据 英雄id来获取英雄名
-      if (heroData[i].heroId.toString() === championId.toString()) {
-        console.log(heroData[i])
-        store.commit('app/setCurrentHero', heroData[i])
-        // 通过英雄名字来开启
-        if (store.state.config.riotConfig.autoSkin) {
-          openSkin(heroData[i].alias)
-        }
-        if (store.state.config.riotConfig.getHeroesAutomatically) {
-          heroName.value = heroData[i].alias
-          mainLoLData.value.seeDetails(heroData[i])
-        }
-        return
-      }
+    store.commit('app/setCurrentHero', currentHero)
+    if (store.state.riotData.riotConfig.getHeroesAutomatically) {
+      heroName.value = currentHero.alias
+    }
+    if (store.state.riotData.riotConfig.autoChangeRune) {
+      setRune(currentHero.alias, -1)
+    }
+    if (store.state.riotData.riotConfig.autoSkin) {
+      openSkin(currentHero.alias)
     }
   })
 }
-
 
 onMounted(() => {
   nationalServiceData()

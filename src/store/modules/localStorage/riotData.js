@@ -1,4 +1,4 @@
-import {setLocalStoregeData} from "@/store/modules/public/local-store";
+import {setLocalStoregeData} from "../public/persistent";
 
 let PATH = 'riotData'
 /**
@@ -13,8 +13,9 @@ const state = () => ({
         autoSkin: true,
         automaticJump: true,
         getHeroesAutomatically: true,
+        autoChangeRune: true
     },
-    runeList: []
+    runeList: {}
 })
 
 const mutations = {
@@ -24,6 +25,7 @@ const mutations = {
     },
     setRuneList(state, val) {
         state.runeList = val
+        setLocalStoregeData(PATH, 'runeList', val)
     }
 }
 

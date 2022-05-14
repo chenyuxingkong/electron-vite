@@ -3,6 +3,8 @@ import {ElMessage} from "element-plus";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 import router from "@/router";
 import store from "@/store"
+import {listIsNotBlanK} from "../../public/blank-utils";
+import {uuid} from "../../public/get-uuid";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -212,8 +214,8 @@ export function callLOLApi(method, route, data) {
 }
 
 export function currentRoom(val) {
-    if (store.state.config.riotConfig.automaticJump) {
-        // ARAM 大乱斗
+    if (store.state.riotData.riotConfig.automaticJump) {
+        // ARAM 大乱斗  URF  大乱斗 CLASSIC 召唤师峡谷
         if (val.phase === 'Lobby') {
             if (val.map.gameMode === 'TFT') {
                 router.push('/youxi/riot/tft')
@@ -223,5 +225,51 @@ export function currentRoom(val) {
         }
     }
 }
+
+/**
+ * 这是符文
+ * @param alias 根据英雄的名字来设置
+ * @param index 符文下标
+ * @returns {Promise<void>}
+ */
+export async function setRune(alias, index) {
+    // 获取当前英雄的全部符文
+    let heroRune = store.state.riotData.runeList[alias]
+    if (listIsNotBlanK(heroRune)) {
+        if (index === -1) {
+            let dataApi = await callLOLApi('get', '/lol-gameflow/v1/session')
+            let gameMode = 'ARAM,URF,CLASSIC'.indexOf(dataApi.map.gameMode) > -1 ? dataApi.map.gameMode : 'CLASSIC'
+            index = heroRune.findIndex(i => i.gameMode === gameMode && i.default)
+        }
+        index = index === -1 ? 0 : index
+        let currentData = heroRune[index]
+        let data = {
+            "autoModifiedSelections": [],
+            "current": true,
+            "id": parseInt(uuid(8, 10)),
+            "isActive": false,
+            "isDeletable": true,
+            "isEditable": true,
+            "isValid": true,
+            "lastModified": Date.now(),
+            "name": currentData.name,
+            "order": 0,
+            "primaryStyleId": currentData.primaryStyleId,
+            "selectedPerkIds": currentData.selectedPerkIds,
+            "subStyleId": currentData.subStyleId
+        }
+        const list = await callLOLApi('get', '/lol-perks/v1/pages')
+        const current = list.find((i) => i.current && i.isDeletable);
+        if (typeof current === 'undefined') {
+            return
+        }
+        if (current.id) {
+            await callLOLApi('delete', `/lol-perks/v1/pages/${current.id}`)
+        }
+        await callLOLApi('post', `/lol-perks/v1/pages`, data)
+        ElMessage.success('配置成功')
+    }
+}
+
 
 

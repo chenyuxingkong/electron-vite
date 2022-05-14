@@ -1,9 +1,12 @@
 <template>
   <RightMenu v-model="rightClick" :height="90" :menu="menu" :title="rightClick.data.name" :width="90"
              @itemClick="checked"/>
-  <hero-rune-config v-if="runeDiaLog" :data="runeList" @close="runeDiaLog = false"/>
-  <el-main style="margin-top: 10px">
-    <ul :style="{maxHeight: windowSize.h - 100 + 'px'}" class="hero_list">
+  <hero-rune-config v-if="runeDiaLog"
+                    :currentHero="rightClick.data"
+                    :runeData="runeList.rune"
+                    @close="runeDiaLog = false"/>
+  <el-main style="margin-top: 2px">
+    <ul :style="{maxHeight: windowSize.h - 120 + 'px'}" class="hero_list">
       <template v-for="item in props.data">
         <li @contextmenu.prevent="seeDetails(item,$event)">
           <div class="hero_img">
@@ -81,6 +84,7 @@ const seeDetails = (val, event) => {
 }
 
 const checked = async (item, data) => {
+  rightClick.value.data = data
   switch (item) {
     case 0:
       await openBrowserPage(`https://101.qq.com/#/hero-detail?heroid=${data.heroId}`)
@@ -96,13 +100,12 @@ const checked = async (item, data) => {
 
 onMounted(async () => {
   runeList.value = await getRuneList()
-  // console.log(runeList.value.rune)
 })
 
 
 // 想要父组件调用需要暴露出去
 defineExpose({
-  seeDetails
+  checked
 })
 
 </script>

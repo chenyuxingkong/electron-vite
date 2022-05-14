@@ -1,3 +1,6 @@
+import {setLocalStoregeData} from "../public/persistent";
+
+let PATH = 'systemData'
 /**
  * <p>
  * 描述：本系统需要使用的数据
@@ -14,6 +17,7 @@ const state = () => ({
 const mutations = {
     setConfig(state, val) {
         state.autoStart = val
+        setLocalStoregeData(PATH, 'config', val)
     }
 }
 

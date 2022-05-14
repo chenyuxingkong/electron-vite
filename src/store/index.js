@@ -28,7 +28,6 @@ const presistent = Presistent({
     }
 })
 
-
 export default createStore({
     modules: {
         ...modules,

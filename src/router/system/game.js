@@ -28,12 +28,6 @@ const router = [
                         meta: {title: '云顶之弈', onRoutes: '/youxi/index', lolSocket: true},
                         component: createNameComponent(() => import('../../views/game-module/lol/TFT.vue'))
                     },
-                    {
-                        path: 'heroDetails',
-                        name: 'heroDetails',
-                        meta: {title: '英雄详情', onRoutes: '/youxi/index', lolSocket: true},
-                        component: createNameComponent(() => import('../../views/game-module/lol/HeroDetails.vue'))
-                    },
                 ]
             },
         ]

@@ -19,7 +19,7 @@ export default defineConfig({
     // 开启 @ 路径 先安装 npm i @types/node -D
     resolve: {
         alias,
-        extensions: ['.js', '.vue', '.json'],
+        extensions: ['.js', '.vue', '.json', '.ts'],
     },
     // 正式环境的地址
     base: process.env.ELECTRON === "true" ? './' : "./",

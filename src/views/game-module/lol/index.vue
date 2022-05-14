@@ -27,10 +27,7 @@
  * @date 2022-05-07 10:31
  */
 import {closeLoLWebSocket, currentRoom, openLoLConnection, setCallback} from "@/utils/game/lol/riot-games";
-import {initRoitConfig} from "../../../store/modules/temp/riot-config";
 import RiotConfig from "../../../components/game/lol/RiotConfig";
-import store from '@/store'
-import router from "../../../router";
 
 const riotConfigDialog = ref(false)
 
@@ -39,19 +36,13 @@ const riotSetting = () => {
 }
 
 onMounted(() => {
-  // 初始化配置
-  initRoitConfig()
   // 获取全部的房间类型
   setCallback('/lol-gameflow/v1/session', function (data) {
     currentRoom(data.data)
   })
-
   setCallback('message', function (data) {
     // console.log(data)
   })
-
-
-
 })
 
 onActivated(() => {
