@@ -49,8 +49,8 @@
 </template>
 
 <script name="RiotConfig" setup>
-import {lolConfigData, setRiotConfig} from "../../../store/modules/local-store/riot-config";
 import store from '../../../store'
+import {clone} from "@/utils/public/clone";
 
 /**
  * <p>
@@ -63,12 +63,14 @@ const emit = defineEmits(['close'])
 const dialog = ref(true)
 
 const confirm = () => {
-  setRiotConfig(lolConfigData.value)
+  store.commit('riotData/setRiotConfig', lolConfigData.value)
   emit('close')
 }
 
+const lolConfigData = ref({})
+
 onMounted(() => {
-  lolConfigData.value = store.state.config.riotConfig
+  lolConfigData.value = clone(store.state.riotData.riotConfig)
 })
 
 

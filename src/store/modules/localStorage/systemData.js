@@ -6,12 +6,14 @@
  * @date 2022-03-22 15:22
  */
 const state = () => ({
-    riotConfig: {},
+    config: {
+        autoStart: true
+    }
 })
 
 const mutations = {
-    setRoitConfig(state, val) {
-        state.riotConfig = val
+    setConfig(state, val) {
+        state.autoStart = val
     }
 }
 

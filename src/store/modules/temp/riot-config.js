@@ -7,9 +7,6 @@ export const lolConfigData = ref({
     autoSkin: true,
     automaticJump: true,
     getHeroesAutomatically: true,
-    heroRuneList: [
-
-    ]
 })
 
 // 初始化配置文件

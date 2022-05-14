@@ -25,7 +25,6 @@ const mutations = {
         state.lol.heroData.push(val)
     },
     setCurrentHero(state, val) {
-        console.log(val)
         state.lol.currentHero = val
     }
 }

@@ -1,30 +1,26 @@
-import store from '../../../store'
-
 const fs = require('fs')
 const {ipcRenderer} = require('electron')
 
-export function initLocalStorageData(name, data, commit) {
-    let appPath = ipcRenderer.sendSync('app-path') + '\\'
-    let stringify = JSON.stringify(data)
-    let filerName = appPath + name
+export function initLocalStorageData(path, name, data) {
+    let appPath = ipcRenderer.sendSync('app-path') + '\\' + path
+    let filerName = appPath + '\\' + name + '.json'
     if (fs.existsSync(filerName)) {
         // 读取配置文件的数据
-        const config = fs.readFileSync(filerName, {encoding: "utf-8"})
+        const config = JSON.parse(fs.readFileSync(filerName, {encoding: "utf-8"}))
         // 配置文件的数据覆盖原来的数据
-        Object.assign(data, JSON.parse(config))
-        store.commit(commit, data)
+        console.log(config)
+        Object.assign(data, config)
+        return data
     } else {
-        writeFileRecursive(appPath, stringify, filerName)
-        store.commit(commit, data)
+        writeFileRecursive(appPath, JSON.stringify(data), filerName)
+        return data
     }
-    return data
 }
 
-export function setLocalStoregeData(name, data, commit) {
-    let appPath = ipcRenderer.sendSync('app-path') + '\\'
-    let filerName = appPath + name
+export function setLocalStoregeData(path, name, data) {
+    let appPath = ipcRenderer.sendSync('app-path') + '\\' + path
+    let filerName = appPath + '\\' + name + '.json'
     fs.writeFileSync(filerName, JSON.stringify(data))
-    store.commit(commit, data)
 }
 
 const writeFileRecursive = (path, data, filerName) => {

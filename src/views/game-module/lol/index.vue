@@ -27,7 +27,7 @@
  * @date 2022-05-07 10:31
  */
 import {closeLoLWebSocket, currentRoom, openLoLConnection, setCallback} from "@/utils/game/lol/riot-games";
-import {initRoitConfig} from "../../../store/modules/local-store/riot-config";
+import {initRoitConfig} from "../../../store/modules/temp/riot-config";
 import RiotConfig from "../../../components/game/lol/RiotConfig";
 import store from '@/store'
 import router from "../../../router";
