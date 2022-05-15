@@ -15,3 +15,12 @@ export const heroPosition = [
     {label: '下路', value: 'adc'},
     {label: '辅助', value: 'support'},
 ]
+
+// 'ARAM','URF','CLASSIC'
+export const riotGameMod = {
+    'ARAM': '极地大乱斗',
+    'URF': '无限火力',
+    'CLASSIC': '召唤师峡谷',
+    'TFT': '云顶之弈',
+}
+

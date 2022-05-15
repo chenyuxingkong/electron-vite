@@ -12,6 +12,7 @@
           <strong> {{ props.currentHero.title }} </strong>
           <em>{{ props.currentHero.name }}</em>
         </div>
+        <el-divider direction="vertical"></el-divider>
         <el-radio-group v-model="gameMode">
           <el-radio-button label="CLASSIC">召唤师峡谷</el-radio-button>
           <el-radio-button label="ARAM">大乱斗</el-radio-button>
@@ -73,7 +74,7 @@
  */
 import store from '@/store'
 import {clone} from "../../../utils/public/clone";
-import {callLOLApi, setRune} from "../../../utils/game/lol/riot-games";
+import {callLOLApi, setCallback, setRune} from "../../../utils/game/lol/riot-games";
 import {listIsNotBlanK} from "../../../utils/public/blank-utils.ts";
 import {Star, StarFilled} from '@element-plus/icons'
 
@@ -90,7 +91,15 @@ const dialog = ref(true)
 const emit = defineEmits(['close'])
 const heroRune = ref({})
 const currentRune = ref({})
+
 const gameMode = ref('CLASSIC')
+
+
+watch(() => store.state.app.lol.gameMod, () => {
+  if (store.state.app.lol.gameMod !== 'TFT') {
+    gameMode.value = store.state.app.lol.gameMod
+  }
+})
 
 const heroImg = (val) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${val}.png`;
@@ -98,10 +107,8 @@ const heroImg = (val) => {
 
 const addRunes = () => {
   let data = {
-    primaryStyleId: currentRune.value.primaryStyleId,
-    subStyleId: currentRune.value.subStyleId,
     name: currentRune.value.name,
-    default: false,
+    default: heroRune.value[props.currentHero.alias].findIndex(i => i.default && i.gameMode === gameMode.value) === -1,
     gameMode: gameMode.value,
     selectedPerkIds: currentRune.value.selectedPerkIds
   }
@@ -146,6 +153,13 @@ onMounted(async () => {
   heroRune.value = clone(store.state.riotData.runeList)
   const list = await callLOLApi('get', '/lol-perks/v1/pages')
   currentRune.value = list.find((i) => i.current && i.isDeletable)
+  gameMode.value = store.state.app.lol.gameMod
+  setCallback('/lol-perks/v1/pages', function (data) {
+    let current = data.data.find((i) => i.current)
+    if (typeof current !== 'undefined') {
+      currentRune.value = data.data.find((i) => i.current);
+    }
+  })
 })
 
 </script>

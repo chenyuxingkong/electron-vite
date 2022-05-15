@@ -3,8 +3,9 @@ import {ElMessage} from "element-plus";
 import {BizException, ExceptionEnum} from "@/utils/exception/BizException.ts";
 import router from "@/router";
 import store from "@/store"
-import {listIsNotBlanK} from "../../public/blank-utils";
+import {listIsNotBlanK, stringIsNotBlank} from "../../public/blank-utils";
 import {uuid} from "../../public/get-uuid";
+import {riotGameMod} from "../../../data/game";
 // 没有这个 websocket 就连接不上 允许 未经授权
 const WebSocket = require('ws');
 
@@ -214,9 +215,11 @@ export function callLOLApi(method, route, data) {
 }
 
 export function currentRoom(val) {
-    if (store.state.riotData.riotConfig.automaticJump) {
-        // ARAM 大乱斗  URF  大乱斗 CLASSIC 召唤师峡谷
-        if (val.phase === 'Lobby') {
+    if (val.phase === 'Lobby') {
+        if (stringIsNotBlank(riotGameMod[val.map.gameMode])) {
+            store.commit('app/setGameMod', val.map.gameMode)
+        }
+        if (store.state.riotData.riotConfig.automaticJump) {
             if (val.map.gameMode === 'TFT') {
                 router.push('/youxi/riot/tft')
             } else {
@@ -235,13 +238,15 @@ export function currentRoom(val) {
 export async function setRune(alias, index) {
     // 获取当前英雄的全部符文
     let heroRune = store.state.riotData.runeList[alias]
+    // ARAM CLASSIC URF
     if (listIsNotBlanK(heroRune)) {
         if (index === -1) {
-            let dataApi = await callLOLApi('get', '/lol-gameflow/v1/session')
-            let gameMode = 'ARAM,URF,CLASSIC'.indexOf(dataApi.map.gameMode) > -1 ? dataApi.map.gameMode : 'CLASSIC'
+            let gameMode = store.state.app.lol.gameMod // store.state.app.lol.gameMod
             index = heroRune.findIndex(i => i.gameMode === gameMode && i.default)
         }
-        index = index === -1 ? 0 : index
+        if (index === -1) {
+            throw new BizException(ExceptionEnum.MESSAGE_ERROR, '没有配置英雄符文')
+        }
         let currentData = heroRune[index]
         let data = {
             "autoModifiedSelections": [],
@@ -254,13 +259,14 @@ export async function setRune(alias, index) {
             "lastModified": Date.now(),
             "name": currentData.name,
             "order": 0,
-            "primaryStyleId": currentData.primaryStyleId,
+            "primaryStyleId": parseInt(currentData.selectedPerkIds[0].toString().substring(0, 2) + '00'),
             "selectedPerkIds": currentData.selectedPerkIds,
-            "subStyleId": currentData.subStyleId
+            "subStyleId": parseInt(currentData.selectedPerkIds[4].toString().substring(0, 2) + '00')
         }
         const list = await callLOLApi('get', '/lol-perks/v1/pages')
         const current = list.find((i) => i.current && i.isDeletable);
         if (typeof current === 'undefined') {
+            ElMessage.error('应用失败')
             return
         }
         if (current.id) {

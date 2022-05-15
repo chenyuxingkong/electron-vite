@@ -38,6 +38,17 @@
             />
           </el-form-item>
         </el-col>
+        <el-col>
+          <el-form-item label="自动配置符文" prop="autoChangeRune">
+            <el-switch
+                v-model="lolConfigData.autoChangeRune"
+                active-color="#13ce66"
+                active-text="开启"
+                inactive-color="#ff4949"
+                inactive-text="关闭"
+            />
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <template #footer>

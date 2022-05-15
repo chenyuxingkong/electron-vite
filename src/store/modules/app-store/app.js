@@ -13,7 +13,8 @@ const state = () => ({
     },
     lol: {
         heroData: [],
-        currentHero: {}
+        currentHero: {},
+        gameMod: 'CLASSIC'
     },
 })
 
@@ -26,6 +27,9 @@ const mutations = {
     },
     setCurrentHero(state, val) {
         state.lol.currentHero = val
+    },
+    setGameMod(state, val) {
+        state.lol.gameMod = val
     }
 }
 
