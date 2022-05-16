@@ -5,7 +5,6 @@
  * @author xc
  * @date 2022-03-22 15:40
  */
-import {clone} from "../../../utils/public/clone";
 
 const fs = require('fs')
 const {ipcRenderer} = require('electron')
@@ -15,11 +14,10 @@ export default function Presistent({modules, modulesKeys}) {
         if (modulesKeys.local.length > 0) {
             for (let item of modulesKeys.local) {
                 Object.keys(store.state[item]).forEach((c) => {
-                    initLocalStorageData(item, c, clone(store.state[item][c]), store)
+                    initLocalStorageData(item, c, store.state[item][c])
                 })
             }
         }
-
     }
 }
 
@@ -31,8 +29,6 @@ function initLocalStorageData(path, name, data, store) {
         const config = JSON.parse(fs.readFileSync(filerName, {encoding: "utf-8"}))
         // 配置文件的数据覆盖原来的数据
         Object.assign(data, config)
-        let storeName = 'set' + name[0].toUpperCase() + name.substr(1)
-        store.commit(`${path}/${storeName}`, data)
     } else {
         writeFileRecursive(appPath, JSON.stringify(data), filerName)
     }

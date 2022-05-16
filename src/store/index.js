@@ -1,8 +1,6 @@
 import {createStore} from 'vuex'
 import Presistent from "@/store/modules/public/persistent";
 
-const debug = process.env.NODE_ENV !== 'production'
-
 const appStore = import.meta.globEager('./modules/app-store/*.js')
 const localFiles = import.meta.globEager('./modules/localStorage/*.js')
 
@@ -32,6 +30,6 @@ export default createStore({
     modules: {
         ...modules,
     },
-    strict: debug,
+    strict: false,
     plugins: [presistent]
 })
